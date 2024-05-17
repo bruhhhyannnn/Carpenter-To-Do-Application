@@ -13,6 +13,15 @@
         android:theme="@style/Theme.CarpenterToDoApplication"
         tools:targetApi="31">
         <activity
+            android:name=".authentication.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".authentication.RegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".authentication.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity

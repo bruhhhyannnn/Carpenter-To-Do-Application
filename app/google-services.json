@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "907608895323",
+    "project_id": "carpenter-todo-application",
+    "storage_bucket": "carpenter-todo-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907608895323:android:5f630038f49246024a347e",
+        "android_client_info": {
+          "package_name": "com.example.carpenterto_doapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAx0Uk7c4W4wpk74vJqJDntl89hyK6VI8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
