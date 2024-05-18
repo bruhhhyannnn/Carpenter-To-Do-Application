@@ -11,4 +11,6 @@
 
     <color name="button">#007AFF</color>
     <color name="settings">#DDDDDD</color>
+
+    <color name="tasks">#D9D9D9</color>
 </resources>
