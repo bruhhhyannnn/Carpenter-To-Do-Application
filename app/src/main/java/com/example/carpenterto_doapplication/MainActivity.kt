@@ -1,11 +1,13 @@
 package com.example.carpenterto_doapplication
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.carpenterto_doapplication.dashboard.ReportsFragment
 import com.example.carpenterto_doapplication.dashboard.TasksFragment
 import com.example.carpenterto_doapplication.databinding.ActivityMainBinding
+import com.example.carpenterto_doapplication.settings.SettingsActivity
 import com.example.carpenterto_doapplication.util.UiUtil
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         bindHeader()
 
         binding.settingsButton.setOnClickListener {
-            UiUtil.showToast(applicationContext, "clicked settings")
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         binding.bottomNavBar.setOnItemSelectedListener { menuItem ->
