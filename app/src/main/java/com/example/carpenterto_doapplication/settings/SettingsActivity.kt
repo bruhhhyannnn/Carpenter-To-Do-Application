@@ -4,9 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.carpenterto_doapplication.R
-import com.example.carpenterto_doapplication.dashboard.ReportsFragment
-import com.example.carpenterto_doapplication.dashboard.TasksFragment
 import com.example.carpenterto_doapplication.databinding.ActivitySettingsBinding
 import com.example.carpenterto_doapplication.splash_art.SplashActivity
 import com.example.carpenterto_doapplication.util.UiUtil
@@ -28,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
         bindHeader()
 
         binding.accountButton.setOnClickListener {
-
+            startActivity(Intent(this, SettingsProfileActivity::class.java))
         }
 
         binding.aboutButton.setOnClickListener {

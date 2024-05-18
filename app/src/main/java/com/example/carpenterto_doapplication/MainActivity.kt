@@ -35,11 +35,9 @@ class MainActivity : AppCompatActivity() {
             when(menuItem.itemId) {
                 R.id.bottom_menu_tasks -> {
                     replaceFragment(TasksFragment())
-                    UiUtil.showToast(applicationContext, "clicked tasks")
                 }
                 R.id.bottom_menu_reports -> {
                     replaceFragment(ReportsFragment())
-                    UiUtil.showToast(applicationContext, "clicked reports")
                 }
 
             }
