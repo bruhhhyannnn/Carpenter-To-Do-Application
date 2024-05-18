@@ -61,6 +61,15 @@
                     android:textSize="20sp"/>
 
                 <EditText
+                    android:id="@+id/username_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:hint="Username"
+                    android:padding="16dp"
+                    android:textSize="20sp"/>
+
+                <EditText
                     android:id="@+id/password_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
