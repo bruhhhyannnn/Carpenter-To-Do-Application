@@ -6,15 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:background="@drawable/mmsu_background"
-    tools:context=".splash_art.SplashActivity">
+    tools:context=".splash_art.SplashWelcomeActivity">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="-280dp"
+        android:layout_marginTop="140dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -30,7 +29,6 @@
 
 
     <TextView
-        android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_bold"
@@ -39,14 +37,29 @@
         android:textColor="@color/white"
         android:textSize="40sp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        android:gravity="center"
+        android:text="Welcome,"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/name_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:gravity="center"
+        android:text="Bryan"
+        android:textColor="@color/white"
+        android:textSize="40sp" />
+
     <ProgressBar
+        android:layout_gravity="center"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_margin="12dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="-398dp"
-        android:layout_marginEnd="11dp"
         android:indeterminateTint="@color/white" />
-
 
 </LinearLayout>
