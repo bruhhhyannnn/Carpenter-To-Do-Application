@@ -47,7 +47,7 @@ class RegistrationActivity : AppCompatActivity() {
 
     private fun createAccount() {
         val email = binding.emailAddressText.text.toString()
-        val username = binding.usernameText.text.toString()
+        val fullName = binding.fullNameText.text.toString()
         val password = binding.passwordText.text.toString()
         val confirmPassword = binding.confirmPasswordText.text.toString()
 
@@ -64,15 +64,15 @@ class RegistrationActivity : AppCompatActivity() {
             return
         }
 
-        createAccountWithFirebase(email, username, password)
+        createAccountWithFirebase(email, fullName, password)
     }
 
-    private fun createAccountWithFirebase(email: String, username: String, password: String) {
+    private fun createAccountWithFirebase(email: String, fullName: String, password: String) {
         setInProgress(true)
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 it.user?.let {user ->
-                    val userModel = UserModel(user.uid, email, username)
+                    val userModel = UserModel(user.uid, email, fullName)
                     Firebase.firestore
                         .collection("users")
                         .document(user.uid)
@@ -82,10 +82,6 @@ class RegistrationActivity : AppCompatActivity() {
                             setInProgress(false)
                             startActivity(Intent(this, SplashWelcomeActivity::class.java))
                             finish()
-                        }
-                        .addOnFailureListener {
-                            UiUtil.showToast(applicationContext, "Seriously?")
-                            setInProgress(false)
                         }
                 }
             }

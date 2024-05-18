@@ -31,7 +31,7 @@ class SplashWelcomeActivity : AppCompatActivity() {
             .whereEqualTo("id", userId)
             .get()
             .addOnSuccessListener {
-                binding.nameText.text = it.documents[0].data?.get("username").toString()
+                binding.nameText.text = it.documents[0].data?.get("fullName").toString().substringBefore(" ")
             }
             .addOnFailureListener {
                 UiUtil.showToast(applicationContext, it.localizedMessage?: "Something went wrong")
