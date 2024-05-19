@@ -6,76 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".dashboard.TasksFragment">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="180dp"
-        android:layout_height="160dp"
-        android:background="@drawable/stroke_tasks"
-        android:elevation="10dp"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/stroke_tasks_model"
-            android:gravity="center"
-            android:padding="26dp">
-
-            <TextView
-                android:id="@+id/task_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="Forklift"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            app:dividerColor="@color/black" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/progress_state"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Pending" />
-
-            <TextView
-                android:id="@+id/progress_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0%" />
-
-        </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/horizontal_progress_bar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" />
-    </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout"
-        android:layout_alignEnd="@+id/linearLayout"
-        android:layout_marginTop="59dp"
-        android:layout_marginEnd="72dp">
-
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-
+        android:id="@+id/machine_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"/>
 </RelativeLayout>
