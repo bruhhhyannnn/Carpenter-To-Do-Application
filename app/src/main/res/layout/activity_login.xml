@@ -66,6 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:layout_marginBottom="32dp"
                     android:hint="Password"
                     android:padding="16dp"
                     android:textSize="20sp"/>
@@ -75,9 +76,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
                     android:text="Log In"
-                    android:layout_marginTop="32dp"
                     android:backgroundTint="@color/button"
+                    android:fontFamily="@font/montserrat_bold"
                     android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/forgot_password_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_marginTop="14dp"
+                    android:textColor="@color/button"
+                    android:text="Forgot password?"/>
+
                 <ProgressBar
                     android:id="@+id/progress_bar"
                     android:layout_width="24dp"
@@ -106,8 +117,7 @@
                     android:textStyle="bold"/>
 
             </LinearLayout>
-
-
         </LinearLayout>
     </LinearLayout>
+
 </RelativeLayout>

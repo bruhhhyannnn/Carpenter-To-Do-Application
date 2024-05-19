@@ -94,6 +94,7 @@
                     android:layout_height="64dp"
                     android:text="Create Account"
                     android:layout_marginTop="32dp"
+                    android:fontFamily="@font/montserrat_bold"
                     android:backgroundTint="@color/button"
                     android:textSize="16sp"/>
                 <ProgressBar

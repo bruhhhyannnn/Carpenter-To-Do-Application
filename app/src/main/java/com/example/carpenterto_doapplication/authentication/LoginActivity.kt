@@ -28,6 +28,11 @@ class LoginActivity : AppCompatActivity() {
             login()
         }
 
+        binding.forgotPasswordText.setOnClickListener {
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
+            finish()
+        }
+
         binding.signupTextButton.setOnClickListener {
             startActivity(Intent(this, RegistrationActivity::class.java))
             finish()
