@@ -1,18 +1,22 @@
 package com.example.carpenterto_doapplication.adapter
 
+import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.dashboard.MachineDetailActivity
 import com.example.carpenterto_doapplication.data_model.TasksModel
 
-class MyAdapter(private val machineList: List<TasksModel>) :
-    RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter constructor(
+    private val activity: Activity,
+    private val machineList: List<TasksModel>
+) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_machine_list_item, parent, false)
@@ -27,18 +31,19 @@ class MyAdapter(private val machineList: List<TasksModel>) :
         val machine = machineList[position]
         holder.machineName.text = machine.machineName
         holder.progressState.text = machine.progressState
-        holder.progressNumber.text = "${machine.progressNumber}%"
+        holder.progressNumber.text = machine.progressNumber.toString()
 
         holder.cardView.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, MachineDetailActivity::class.java).apply {
+            val intent = Intent(activity, MachineDetailActivity::class.java).apply {
+                putExtra("machineId", machine.machineId)
                 putExtra("machineName", machine.machineName)
                 putExtra("progressState", machine.progressState)
                 putExtra("progressNumber", machine.progressNumber)
                 putStringArrayListExtra("tasks", ArrayList(machine.tasks))
                 putExtra("tasksCompleted", machine.tasksCompleted.toBooleanArray())
             }
-            context.startActivity(intent)
+            activity.startActivity(intent)
+            Toast.makeText(activity, machine.machineName, Toast.LENGTH_SHORT).show()
         }
     }
 

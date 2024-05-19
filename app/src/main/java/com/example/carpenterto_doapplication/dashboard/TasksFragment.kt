@@ -1,21 +1,25 @@
 package com.example.carpenterto_doapplication.dashboard
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.adapter.MyAdapter
 import com.example.carpenterto_doapplication.data_model.TasksModel
+import com.google.firebase.firestore.FirebaseFirestore
 
 class TasksFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var myAdapter: MyAdapter
-    private var taskList = mutableListOf<TasksModel>()
+    private val taskList = mutableListOf<TasksModel>()
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -23,7 +27,7 @@ class TasksFragment : Fragment() {
 
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.machine_list)
-        myAdapter = MyAdapter(taskList)
+        myAdapter = MyAdapter(requireActivity(), taskList)
         val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = myAdapter
