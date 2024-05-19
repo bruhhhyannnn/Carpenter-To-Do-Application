@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +31,21 @@ class MachineDetailActivity : AppCompatActivity() {
 
         val btnGenerateReport = findViewById<Button>(R.id.generate_report_button)
         btnGenerateReport.setOnClickListener {
-            Toast.makeText(this, "Generate Report Clicked", Toast.LENGTH_SHORT).show()
+            generateReport()
         }
+    }
+
+    fun generateReport() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Do you want to generate report?")
+        builder.setMessage("Please make sure you have completed all the tasks for this maintenance.")
+        builder.setPositiveButton("Generate") { dialog, _ ->
+            // implement code later
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
     }
 }
