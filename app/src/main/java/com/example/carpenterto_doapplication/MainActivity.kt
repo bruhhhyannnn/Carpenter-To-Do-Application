@@ -24,6 +24,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+//        Firebase.firestore
+//            .collection("users")
+//            .whereEqualTo("id", FirebaseAuth.getInstance().currentUser!!.uid)
+//            .get()
+//            .addOnSuccessListener {
+//                postcount.text = it.size().toString()
+//            }
+
+
         replaceFragment(TasksFragment())
         bindHeader()
 
@@ -43,7 +52,6 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-
     }
 
     private fun bindHeader() {
@@ -61,7 +69,6 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener {
                 UiUtil.showToast(applicationContext, it.localizedMessage?: "Something went wrong")
             }
-
         binding.dateTodayText.text = "Today: " + dateFormat
     }
 

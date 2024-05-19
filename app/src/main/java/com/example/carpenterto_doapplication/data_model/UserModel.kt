@@ -1,4 +1,4 @@
-package com.example.carpenterto_doapplication.user_data_model
+package com.example.carpenterto_doapplication.data_model
 
 data class UserModel(
     var id : String = "",

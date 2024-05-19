@@ -4,11 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.carpenterto_doapplication.databinding.ActivityRegistrationBinding
 import com.example.carpenterto_doapplication.splash_art.SplashWelcomeActivity
-import com.example.carpenterto_doapplication.user_data_model.UserModel
+import com.example.carpenterto_doapplication.data_model.UserModel
 import com.example.carpenterto_doapplication.util.UiUtil
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
