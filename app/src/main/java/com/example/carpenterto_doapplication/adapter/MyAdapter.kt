@@ -36,6 +36,7 @@ class MyAdapter(private val machineList: List<TasksModel>) :
                 putExtra("progressState", machine.progressState)
                 putExtra("progressNumber", machine.progressNumber)
                 putStringArrayListExtra("tasks", ArrayList(machine.tasks))
+                putExtra("tasksCompleted", machine.tasksCompleted.toBooleanArray())
             }
             context.startActivity(intent)
         }

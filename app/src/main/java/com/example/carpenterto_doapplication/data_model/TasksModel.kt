@@ -5,5 +5,6 @@ data class TasksModel(
     var machineName: String = "",
     var progressState: String = "",
     var progressNumber: Int,
-    var tasks: MutableList<String> = mutableListOf()
+    var tasks: MutableList<String> = mutableListOf(),
+    var tasksCompleted: MutableList<Boolean> = MutableList(tasks.size) { false }
 )
