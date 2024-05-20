@@ -1,6 +1,5 @@
 package com.example.carpenterto_doapplication.dashboard
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,23 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.adapter.MachineAdapter
 import com.example.carpenterto_doapplication.data_model.MachineModel
-import com.google.firebase.firestore.FirebaseFirestore
 
-class MachineFragment : Fragment(), MachineAdapter.OnItemClickListener {
+class MachineFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var machineAdapter: MachineAdapter
-    private val taskList = mutableListOf<MachineModel>()
-    private val db = FirebaseFirestore.getInstance()
+    private lateinit var machineList: ArrayList<MachineModel>
+    private lateinit var machineAdapter : MachineAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_machine, container, false)
 
         recyclerView = view.findViewById(R.id.machine_list)
-        machineAdapter = MachineAdapter(requireActivity(), taskList, this)
-        val layoutManager = GridLayoutManager(context, 2)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = machineAdapter
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = GridLayoutManager(context, 2)
 
         prepareMachineListData()
 
@@ -35,24 +30,23 @@ class MachineFragment : Fragment(), MachineAdapter.OnItemClickListener {
     }
 
     private fun prepareMachineListData() {
-        val machine1Tasks = mutableListOf("PM review", "Design team critique session", "Engineer Review")
-        val machine2Tasks = mutableListOf("Development Review", "App Review", "Carpentry")
-        // ... add more tasks for other machines
 
-        taskList.add(MachineModel(1, "Forklift", "In Progress", 1, machine1Tasks))
-        taskList.add(MachineModel(2, "Excavator", "Pending", 2, machine2Tasks))
-        // ... add more machines
+        machineList = ArrayList()
+        machineList.add(MachineModel("test",1, "Forklift", "In Progress", 1))
+        machineList.add(MachineModel("test",0, "Excavator", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Compactor", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Dump-Truck", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Flat-Bed-Truck", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Transit-Mixer", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Grader", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Bulldozer", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Crane", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Road-Roller", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Loader", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "Backhoe", "Not Started", 0))
+        machineList.add(MachineModel("test",0, "One-Bagger", "Not Started", 0))
 
-        machineAdapter.notifyDataSetChanged()
-    }
-
-    override fun onItemClick(position: Int) {
-        val selectedMachine = taskList[position]
-        val intent = Intent(requireContext(), MachineTaskActivity::class.java).apply {
-            putExtra("machineId", selectedMachine.machineId)
-            putExtra("machineName", selectedMachine.machineName)
-            putStringArrayListExtra("tasks", ArrayList(selectedMachine.tasks))
-        }
-        startActivity(intent)
+        machineAdapter = MachineAdapter(machineList)
+        recyclerView.adapter = machineAdapter
     }
 }

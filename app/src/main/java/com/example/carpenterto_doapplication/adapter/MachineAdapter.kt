@@ -1,49 +1,46 @@
 package com.example.carpenterto_doapplication.adapter
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.carpenterto_doapplication.MainActivity
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.data_model.MachineModel
+import com.example.carpenterto_doapplication.util.UiUtil
 
 class MachineAdapter(
-    private val activity: Activity,
-    private val machineList: List<MachineModel>,
-    private val onItemClickListener: OnItemClickListener
-) : RecyclerView.Adapter<MachineAdapter.MyViewHolder>() {
+    private val machineList:ArrayList<MachineModel>)
+    : RecyclerView.Adapter<MachineAdapter.MachineViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MachineViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_machine, parent, false)
-        return MyViewHolder(view)
+        return MachineViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return machineList.size
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MachineViewHolder, position: Int) {
         val machine = machineList[position]
         holder.machineName.text = machine.machineName
         holder.progressState.text = machine.progressState
         holder.progressNumber.text = machine.progressNumber.toString()
 
         holder.cardView.setOnClickListener {
-            onItemClickListener.onItemClick(position)
+//            UiUtil.showToast(getActivity, machineList[position].machineName)
         }
     }
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    class MachineViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val machineName: TextView = itemView.findViewById(R.id.machine_name)
         val progressState: TextView = itemView.findViewById(R.id.progress_state)
         val progressNumber: TextView = itemView.findViewById(R.id.progress_number)
         val cardView: CardView = itemView.findViewById(R.id.cardView)
-    }
 
-    interface OnItemClickListener {
-        fun onItemClick(position: Int)
     }
 }
