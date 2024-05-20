@@ -1,6 +1,6 @@
 package com.example.carpenterto_doapplication.data_model
 
-data class TasksModel(
+data class MachineModel(
     var machineId: Int,
     var machineName: String = "",
     var progressState: String = "",
