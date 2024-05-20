@@ -39,7 +39,7 @@
         android:fontFamily="@font/montserrat_bold"
         android:layout_marginTop="20dp"
         android:text="test"
-        android:textSize="24sp"
+        android:textSize="26sp"
         android:textStyle="bold"
         android:paddingBottom="16dp"/>
 
@@ -61,8 +61,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="18dp"
-            android:backgroundTint="@color/button"
-            android:fontFamily="@font/montserrat_bold"
+            android:backgroundTint="@color/bottom_nav_bar"
+            android:textColor="@color/black"
             android:text="Generate Report"/>
 
         <Button
@@ -71,8 +71,8 @@
             android:layout_height="wrap_content"
             android:padding="18dp"
             android:layout_marginLeft="20dp"
-            android:backgroundTint="@color/button"
-            android:fontFamily="@font/montserrat_bold"
+            android:backgroundTint="@color/bottom_nav_bar"
+            android:textColor="@color/black"
             android:text="Save Progress"/>
     </LinearLayout>
 </LinearLayout>
