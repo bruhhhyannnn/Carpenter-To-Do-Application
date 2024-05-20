@@ -11,12 +11,20 @@ import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.adapter.ChecklistAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 
 class MachineTaskActivity : AppCompatActivity() {
 
-    private lateinit var tasks: List<String>
-    private lateinit var tasksCompleted: BooleanArray
+    private lateinit var recyclerView: RecyclerView
     private lateinit var checklistAdapter: ChecklistAdapter
+    private lateinit var saveProgressButton: Button
+    private lateinit var generateReportButton: Button
+
+    private lateinit var machineId: String
+    private lateinit var machineName: String
+    private val tasks = mutableListOf<String>()
+    private val tasksCompleted = mutableListOf<Boolean>()
+
     private val db = FirebaseFirestore.getInstance()
     private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
@@ -24,45 +32,45 @@ class MachineTaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_machine_task)
 
-        val machineName = intent.getStringExtra("machineName") ?: "Unknown"
-        tasks = intent.getStringArrayListExtra("tasks") ?: arrayListOf()
-        tasksCompleted = BooleanArray(tasks.size) { false }
+        machineId = intent.getIntExtra("machine_id", 0).toString()
+        machineName = intent.getStringExtra("machine_name") ?: ""
 
-        val tvMachineName = findViewById<TextView>(R.id.machine_name)
-        tvMachineName.text = machineName
+        findViewById<TextView>(R.id.machine_name).text = machineName
 
-        val recyclerView = findViewById<RecyclerView>(R.id.checklist_recycler_view)
+        recyclerView = findViewById(R.id.checklist_recycler_view)
+        saveProgressButton = findViewById(R.id.save_progress_button)
+        generateReportButton = findViewById(R.id.generate_report_button)
+
         recyclerView.layoutManager = LinearLayoutManager(this)
-        checklistAdapter = ChecklistAdapter(tasks, tasksCompleted)
+
+        tasks.addAll(listOf("Task 1", "Task 2", "Task 3"))
+        tasksCompleted.addAll(List(tasks.size) { false })
+
+        checklistAdapter = ChecklistAdapter(tasks, tasksCompleted.toBooleanArray(), machineId)
         recyclerView.adapter = checklistAdapter
 
-        val btnGenerateReport = findViewById<Button>(R.id.generate_report_button)
-        btnGenerateReport.setOnClickListener {
-            Toast.makeText(this, "Generate Report Clicked", Toast.LENGTH_SHORT).show()
+        saveProgressButton.setOnClickListener {
+            saveProgressToFirestore()
         }
 
-        val btnSaveProgress = findViewById<Button>(R.id.save_progress_button)
-        btnSaveProgress.setOnClickListener {
-            saveProgressToFirestore(machineName)
+        generateReportButton.setOnClickListener {
+            Toast.makeText(this, "Report Generated", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun saveProgressToFirestore(machineName: String) {
-        val machineRef = db.collection("users").document(userId)
-            .collection("reports").document(machineName)
-
-        val tasksCompletedList = tasksCompleted.toList()
-        val data = hashMapOf(
-            "machineName" to machineName,
-            "tasksCompleted" to tasksCompletedList
+    private fun saveProgressToFirestore() {
+        val progressData = hashMapOf(
+            "machine_name" to machineName,
+            "tasks_completed" to tasksCompleted
         )
 
-        machineRef.set(data)
+        db.collection("users").document(userId).collection("reports").document(machineId)
+            .set(progressData)
             .addOnSuccessListener {
-                Toast.makeText(this, "Progress Saved Successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Progress Saved", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error saving progress: ${e.message}", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to Save Progress", Toast.LENGTH_SHORT).show()
             }
     }
 }

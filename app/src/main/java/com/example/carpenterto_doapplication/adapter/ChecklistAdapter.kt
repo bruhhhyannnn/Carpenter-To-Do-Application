@@ -4,13 +4,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ChecklistAdapter(
     private val tasks: List<String>,
-    private val tasksCompleted: BooleanArray
+    private val tasksCompleted: BooleanArray,
+    private val machineId: String
 ) : RecyclerView.Adapter<ChecklistAdapter.ChecklistViewHolder>() {
+
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChecklistViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_checklist, parent, false)
@@ -22,15 +27,32 @@ class ChecklistAdapter(
     }
 
     override fun onBindViewHolder(holder: ChecklistViewHolder, position: Int) {
-        holder.checkBox.text = tasks[position]
-        holder.checkBox.isChecked = tasksCompleted[position]
+        holder.taskTextView.text = tasks[position]
+        holder.taskCheckBox.isChecked = tasksCompleted[position]
 
-        holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
+        holder.taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
             tasksCompleted[position] = isChecked
+            saveProgressToFirestore()
         }
     }
 
+    private fun saveProgressToFirestore() {
+        val progressData = hashMapOf(
+            "tasks_completed" to tasksCompleted.toList() // Convert to list
+        )
+
+        db.collection("machines").document(machineId)
+            .set(progressData)
+            .addOnSuccessListener {
+                // Handle success
+            }
+            .addOnFailureListener {
+                // Handle failure
+            }
+    }
+
     class ChecklistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val checkBox: CheckBox = itemView.findViewById(R.id.checkBox)
+        val taskTextView: TextView = itemView.findViewById(R.id.machine_name)
+        val taskCheckBox: CheckBox = itemView.findViewById(R.id.checkBox)
     }
 }

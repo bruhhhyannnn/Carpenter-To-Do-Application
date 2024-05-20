@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.carpenterto_doapplication.MainActivity
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.data_model.MachineModel
-import com.example.carpenterto_doapplication.util.UiUtil
 
 class MachineAdapter(
-    private val machineList:ArrayList<MachineModel>)
-    : RecyclerView.Adapter<MachineAdapter.MachineViewHolder>() {
+    private val machineList: ArrayList<MachineModel>
+) : RecyclerView.Adapter<MachineAdapter.MachineViewHolder>() {
+
+    var onItemClick: ((MachineModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MachineViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_machine, parent, false)
@@ -30,17 +30,15 @@ class MachineAdapter(
         holder.progressState.text = machine.progressState
         holder.progressNumber.text = machine.progressNumber.toString()
 
-        holder.cardView.setOnClickListener {
-//            UiUtil.showToast(getActivity, machineList[position].machineName)
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(machine)
         }
     }
-
 
     class MachineViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val machineName: TextView = itemView.findViewById(R.id.machine_name)
         val progressState: TextView = itemView.findViewById(R.id.progress_state)
         val progressNumber: TextView = itemView.findViewById(R.id.progress_number)
         val cardView: CardView = itemView.findViewById(R.id.cardView)
-
     }
 }
