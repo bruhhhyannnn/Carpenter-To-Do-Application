@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Forklift"
-                android:textSize="18sp" />
+                android:textSize="17sp" />
         </LinearLayout>
 
         <com.google.android.material.divider.MaterialDivider

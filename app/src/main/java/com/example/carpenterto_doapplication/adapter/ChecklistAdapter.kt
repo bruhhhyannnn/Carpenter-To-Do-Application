@@ -27,7 +27,7 @@ class ChecklistAdapter(
     }
 
     override fun onBindViewHolder(holder: ChecklistViewHolder, position: Int) {
-        holder.taskTextView.text = tasks[position]
+//        holder.taskTextView.text = tasks[position]
         holder.taskCheckBox.isChecked = tasksCompleted[position]
 
         holder.taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -52,7 +52,7 @@ class ChecklistAdapter(
     }
 
     class ChecklistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val taskTextView: TextView = itemView.findViewById(R.id.machine_name)
+//        val taskTextView: TextView = itemView.findViewById(R.id.machine_name)
         val taskCheckBox: CheckBox = itemView.findViewById(R.id.checkBox)
     }
 }

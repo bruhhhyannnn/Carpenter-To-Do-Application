@@ -64,6 +64,17 @@ class MachineTaskActivity : AppCompatActivity() {
             "tasks_completed" to tasksCompleted
         )
 
+        db.collection("machines")
+            .document(userId)
+            .set(progressData)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Progress Saved", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to Save Progress", Toast.LENGTH_SHORT).show()
+            }
+
+
         db.collection("users").document(userId).collection("reports").document(machineId)
             .set(progressData)
             .addOnSuccessListener {
