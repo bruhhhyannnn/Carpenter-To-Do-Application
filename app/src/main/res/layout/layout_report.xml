@@ -13,7 +13,7 @@
     android:id="@+id/checklistView">
 
     <LinearLayout
-        android:layout_width="260dp"
+        android:layout_width="350dp"
         android:layout_height="135dp"
         android:padding="10dp"
         android:orientation="vertical"
@@ -38,25 +38,63 @@
             android:layout_marginBottom="10dp"
             app:dividerColor="@color/black"/>
 
-        <TextView
-            android:id="@+id/report_name"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
-            android:textSize="18sp"
-            android:text="Report: Forklift"/>
-        <TextView
-            android:id="@+id/report_date_generated"
-            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:textSize="18sp"
+                android:text="Report: "/>
+            <TextView
+                android:id="@+id/report_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Forklift"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="Date Generated: 05/17/2024"/>
-        <TextView
-            android:id="@+id/report_time_generated"
-            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:textSize="16sp"
+                android:text="Date Generated: "/>
+
+            <TextView
+                android:id="@+id/report_date_generated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="05/17/2024"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="Time: 5:00PM"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:textSize="16sp"
+                android:text="Time: "/>
+            <TextView
+                android:id="@+id/report_time_generated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="5:00PM"/>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

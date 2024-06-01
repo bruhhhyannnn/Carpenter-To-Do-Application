@@ -8,7 +8,7 @@
     tools:context=".dashboard.ReportFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/machine_list"
+        android:id="@+id/report_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"/>

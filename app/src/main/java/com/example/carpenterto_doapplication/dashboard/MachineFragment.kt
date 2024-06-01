@@ -39,7 +39,7 @@ class MachineFragment : Fragment() {
 
         getData()
 
-        preparemachineData()
+        prepareMachineData()
 
         return view
     }
@@ -54,7 +54,7 @@ class MachineFragment : Fragment() {
         )
     }
 
-    private fun preparemachineData() {
+    private fun prepareMachineData() {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
         
         machineData = ArrayList()
