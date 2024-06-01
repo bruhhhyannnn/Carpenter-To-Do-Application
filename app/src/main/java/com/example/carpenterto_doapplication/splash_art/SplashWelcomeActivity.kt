@@ -7,13 +7,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.carpenterto_doapplication.MainActivity
 import com.example.carpenterto_doapplication.databinding.ActivitySplashWelcomeBinding
 import com.example.carpenterto_doapplication.util.UiUtil
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class SplashWelcomeActivity : AppCompatActivity() {
 
-    lateinit var binding : ActivitySplashWelcomeBinding
+    private lateinit var binding: ActivitySplashWelcomeBinding
+    private var userId = FirebaseAuth.getInstance().currentUser!!.uid
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,23 +24,24 @@ class SplashWelcomeActivity : AppCompatActivity() {
         getName()
     }
 
-    fun getName() {
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
-        Firebase.firestore
-            .collection("users")
-            .whereEqualTo("id", userId)
+    private fun getName() {
+        Firebase.firestore.collection("users")
+            .whereEqualTo("userId", userId)
             .get()
-            .addOnSuccessListener {
-                binding.nameText.text = it.documents[0].data?.get("fullName").toString().substringBefore(" ")
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    binding.nameText.text = documents.documents[0].data?.get("fullName").toString().substringBefore(" ")
+                } else {
+                    UiUtil.showToast(applicationContext, "User document not found")
+                }
             }
             .addOnFailureListener {
-                UiUtil.showToast(applicationContext, it.localizedMessage?: "Something went wrong")
+                UiUtil.showToast(applicationContext, it.localizedMessage ?: "Something went wrong")
             }
 
         Handler().postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             finish()
-        }, 4000)
+        }, 3000)
     }
 }

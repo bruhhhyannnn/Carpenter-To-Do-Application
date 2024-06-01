@@ -2,9 +2,11 @@ package com.example.carpenterto_doapplication.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.databinding.ActivityRegistrationBinding
 import com.example.carpenterto_doapplication.splash_art.SplashWelcomeActivity
 import com.example.carpenterto_doapplication.data_model.UserModel
@@ -78,6 +80,7 @@ class RegistrationActivity : AppCompatActivity() {
                         .set(userModel)
                         .addOnSuccessListener {
                             UiUtil.showToast(applicationContext, "Account created successfully")
+                            addMachineDataToFirebase()
                             setInProgress(false)
                             startActivity(Intent(this, SplashWelcomeActivity::class.java))
                             finish()
@@ -88,5 +91,30 @@ class RegistrationActivity : AppCompatActivity() {
                 UiUtil.showToast(applicationContext, it.localizedMessage?: "Something went wrong")
                 setInProgress(false)
             }
+    }
+
+    private fun addMachineDataToFirebase() {
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val machines = resources.getStringArray(R.array.machineList)
+        val userMachinesRef = Firebase.firestore
+            .collection("machines")
+            .document(userId)
+            .collection("userMachines")
+
+        // Loop through the machines array and add each machine to Firestore
+        for (machine in machines) {
+            val machineData = hashMapOf(
+                "machineName" to machine,
+                "progressState" to "Not Started",
+                "progressNumber" to 0
+            )
+            userMachinesRef.add(machineData)
+                .addOnSuccessListener {
+                    Log.d("Firestore", "DocumentSnapshot successfully written for $machine!")
+                }
+                .addOnFailureListener { e ->
+                    UiUtil.showToast(applicationContext, e.localizedMessage ?: "Something went wrong")
+                }
+        }
     }
 }
