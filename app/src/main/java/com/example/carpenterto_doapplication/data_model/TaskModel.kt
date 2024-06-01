@@ -5,4 +5,5 @@ data class TaskModel(
     var machineId : Int,
     var taskId : Int,
     var taskName : String = "",
+//    var isCompleted : Boolean
 )

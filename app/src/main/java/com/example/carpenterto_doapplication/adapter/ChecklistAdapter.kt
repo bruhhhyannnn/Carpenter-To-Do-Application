@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
+import com.example.carpenterto_doapplication.dashboard.MachineTaskActivity
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ChecklistAdapter(
@@ -27,11 +29,11 @@ class ChecklistAdapter(
     }
 
     override fun onBindViewHolder(holder: ChecklistViewHolder, position: Int) {
-//        holder.taskTextView.text = tasks[position]
         holder.taskCheckBox.isChecked = tasksCompleted[position]
 
         holder.taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
             tasksCompleted[position] = isChecked
+//            Toast.makeText(, "${tasks[position]} is ${if (isChecked) "completed" else "not completed"}", Toast.LENGTH_SHORT).show()
             saveProgressToFirestore()
         }
     }
@@ -52,7 +54,6 @@ class ChecklistAdapter(
     }
 
     class ChecklistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val taskTextView: TextView = itemView.findViewById(R.id.machine_name)
         val taskCheckBox: CheckBox = itemView.findViewById(R.id.checkBox)
     }
 }

@@ -21,16 +21,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="All Tasks"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_bold"
             android:text="Maintenance"
-            android:textSize="22sp"
+            android:textSize="26sp"
             android:textStyle="bold"/>
-
+        <TextView
+            android:id="@+id/date_today_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today: 05/17/2024"
+            android:textAlignment="center"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- MAIN -->
@@ -65,6 +71,7 @@
             android:padding="18dp"
             android:backgroundTint="@color/bottom_nav_bar"
             android:textColor="@color/black"
+            android:fontFamily="@font/montserrat_bold"
             android:text="Generate Report"/>
 
         <Button
@@ -75,6 +82,7 @@
             android:layout_marginLeft="20dp"
             android:backgroundTint="@color/bottom_nav_bar"
             android:textColor="@color/black"
+            android:fontFamily="@font/montserrat_bold"
             android:text="Save Progress"/>
     </LinearLayout>
 </LinearLayout>

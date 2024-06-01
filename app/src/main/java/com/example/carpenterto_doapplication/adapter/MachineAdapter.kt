@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.data_model.MachineModel
@@ -33,12 +32,25 @@ class MachineAdapter(
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(machine)
         }
+
+//        holder.itemView.setOnClickListener {
+//            itemClickListener.onItemClick(position)
+//        }
     }
 
     class MachineViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val machineName: TextView = itemView.findViewById(R.id.machine_name)
         val progressState: TextView = itemView.findViewById(R.id.progress_state)
         val progressNumber: TextView = itemView.findViewById(R.id.progress_number)
-        val cardView: CardView = itemView.findViewById(R.id.cardView)
+
+//            init {
+//                val position = adapterPosition
+//                itemView.setOnClickListener {
+//                    if (position != RecyclerView.NO_POSITION) {
+//                        onItemClick?.invoke(machineList[position])
+//                    }
+//                }
+//
+//            }
     }
 }
