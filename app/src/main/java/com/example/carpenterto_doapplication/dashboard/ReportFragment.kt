@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.adapter.ReportAdapter
 import com.example.carpenterto_doapplication.data_model.ReportModel
+import com.example.carpenterto_doapplication.util.UiUtil
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.firestore
 import java.util.UUID
 
 class ReportFragment : Fragment() {
@@ -18,25 +22,49 @@ class ReportFragment : Fragment() {
     private lateinit var reportData: ArrayList<ReportModel>
     private lateinit var reportAdapter: ReportAdapter
 
+    private var userId = FirebaseAuth.getInstance().currentUser!!.uid
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
-
-        getData()
 
         recyclerView = view.findViewById(R.id.report_list)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        return view
-    }
-
-    private fun getData() {
         reportData = ArrayList()
-        reportData.add(ReportModel(UUID.randomUUID().toString(), "Forklift", "06/01/2024", "5:00 PM"))
-
         reportAdapter = ReportAdapter(reportData)
         recyclerView.adapter = reportAdapter
 
+        getReportDataFromFirebase()
+
+        return view
     }
+
+    private fun getReportDataFromFirebase() {
+        Firebase.firestore
+            .collection("reports")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val reportModel = document.toObject(ReportModel::class.java)
+                    reportModel.let {
+                        reportData.add(it)
+                    }
+                }
+                reportAdapter.notifyDataSetChanged()
+            }
+            .addOnFailureListener { exception ->
+                context?.let {
+                    UiUtil.showToast(it, "Failed to fetch data from Firebase: ${exception.message}")
+                }
+            }
+    }
+
+//    private fun deleteReport(position: Int) {
+//        reportData.removeAt(position)
+//        reportAdapter.notifyDataSetChanged()
+//
+//    }
 
 }

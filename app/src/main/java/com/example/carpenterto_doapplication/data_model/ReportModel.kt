@@ -6,5 +6,6 @@ data class ReportModel(
     var reportId: String = UUID.randomUUID().toString(),
     var reportTitle: String = "",
     var reportDate : String = "",
-    var reportTime : String = ""
+    var reportTime : String = "",
+    var userId : String = ""
 )
