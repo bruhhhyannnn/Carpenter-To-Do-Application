@@ -28,7 +28,7 @@ class SettingsProfileActivity : AppCompatActivity() {
 
         Firebase.firestore
             .collection("users")
-            .whereEqualTo("id", userId)
+            .whereEqualTo("userId", userId)
             .get()
             .addOnSuccessListener {
                 binding.firstNameText.text = it.documents[0].data?.get("fullName").toString().substringBefore(" ")

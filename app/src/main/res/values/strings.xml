@@ -63,21 +63,31 @@
 
     <string-array name="daily_maintenance">
         <item>Daily Maintenance</item>
-
+        <item>Check the ignition system “batteries, plugs and ignitions”</item>
+        <item>Check cooling system “radiator and thermostat and cooling fans”</item>
+        <item>Inspect the belts and hoses “for sign of wear and tear”</item>
+        <item>Inspect tire for wear, bulges and cuts</item>
+        <item>Check the rims to make sure there are no cuts or abnormalities</item>
+        <item>Verify the tire screw’s tightness</item>
+        <item>Track regulations “foot pedal and handbrakes”</item>
+        <item>Inspect the average charge of the battery</item>
+        <item>Inspect wirings for unconnected networks</item>
+        <item>Check or fill the hydraulic tank</item>
     </string-array>
 
     <string-array name="monthly_maintenance">
         <item>Monthly Maintenance</item>
-
+        <item>Check the fuel system “coolant and oil”</item>
+        <item>Check air gauge</item>
+        <item>Look for any indication of physical damage and abrasion</item>
+        <item>Inspect the proper voltage</item>
     </string-array>
 
     <string-array name="as_needed_maintenance">
         <item>As Needed Maintenance</item>
-
-    </string-array>
-
-    <string-array name="suggested_maintenance">
-        <item>Suggested Maintenance</item>
-
+        <item>Replace tires and bolts</item>
+        <item>Look for parts that can be replaced</item>
+        <item>Fixed or repair damages</item>
+        <item>Inspect the proper voltage</item>
     </string-array>
 </resources>

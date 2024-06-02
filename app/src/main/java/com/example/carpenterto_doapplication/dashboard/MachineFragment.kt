@@ -42,7 +42,7 @@ class MachineFragment : Fragment() {
         return view
     }
 
-    fun setInProgress(inProgress : Boolean) {
+    private fun setInProgress(inProgress : Boolean) {
         if (inProgress) {
             progressBar.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
@@ -60,7 +60,7 @@ class MachineFragment : Fragment() {
             .collection("machines")
             .document(userId)
             .collection("userMachines")
-
+        setInProgress(true)
         userMachinesRef.get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {

@@ -103,10 +103,10 @@ class RegistrationActivity : AppCompatActivity() {
 
         for ((index, machine) in machines.withIndex()) {
             val machineData = hashMapOf(
-                "machineId" to (index + 1), // Assign machineId values from 1 to 13
+                "machineId" to (index + 1),
                 "machineName" to machine,
                 "progressState" to "Not Started",
-                "progressNumber" to 0
+                "progressNumber" to 0,
             )
             userMachinesRef.add(machineData)
                 .addOnSuccessListener {
@@ -116,5 +116,38 @@ class RegistrationActivity : AppCompatActivity() {
                     UiUtil.showToast(applicationContext, e.localizedMessage ?: "Something went wrong")
                 }
         }
+
+        addMaintenanceTasksToFirebase()
+    }
+
+    private fun addMaintenanceTasksToFirebase() {
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val dailyMaintenance = resources.getStringArray(R.array.daily_maintenance).toList()
+        val monthlyMaintenance = resources.getStringArray(R.array.monthly_maintenance).toList()
+        val asNeededMaintenance = resources.getStringArray(R.array.as_needed_maintenance).toList()
+
+        fun addMaintenanceData(collectionName: String, taskNames: List<String>) {
+            val userMachinesRef = Firebase.firestore
+                .collection("tasks")
+                .document(userId)
+                .collection(collectionName)
+
+            val maintenanceData = hashMapOf(
+                "tasksCompleted" to MutableList(taskNames.size) { false },
+                "tasksCompleteName" to taskNames
+            )
+
+            userMachinesRef.add(maintenanceData)
+                .addOnSuccessListener {
+                    Log.d("Firestore", "$collectionName DocumentSnapshot successfully written!")
+                }
+                .addOnFailureListener { e ->
+                    UiUtil.showToast(applicationContext, e.localizedMessage ?: "Something went wrong")
+                }
+        }
+
+        addMaintenanceData("dailyMaintenance", dailyMaintenance)
+        addMaintenanceData("monthlyMaintenance", monthlyMaintenance)
+        addMaintenanceData("asNeededMaintenance", asNeededMaintenance)
     }
 }
