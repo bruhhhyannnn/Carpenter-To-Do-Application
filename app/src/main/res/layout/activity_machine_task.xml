@@ -45,11 +45,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_bold"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:text="test"
         android:textSize="26sp"
-        android:textStyle="bold"
-        android:paddingBottom="16dp"/>
+        android:textStyle="bold"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/checklist_recycler_view"
         android:layout_width="match_parent"

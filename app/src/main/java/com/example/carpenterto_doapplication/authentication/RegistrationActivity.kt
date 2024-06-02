@@ -101,9 +101,9 @@ class RegistrationActivity : AppCompatActivity() {
             .document(userId)
             .collection("userMachines")
 
-        // Loop through the machines array and add each machine to Firestore
-        for (machine in machines) {
+        for ((index, machine) in machines.withIndex()) {
             val machineData = hashMapOf(
+                "machineId" to (index + 1), // Assign machineId values from 1 to 13
                 "machineName" to machine,
                 "progressState" to "Not Started",
                 "progressNumber" to 0

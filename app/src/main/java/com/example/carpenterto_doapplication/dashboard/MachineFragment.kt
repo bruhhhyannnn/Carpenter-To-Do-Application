@@ -2,9 +2,11 @@ package com.example.carpenterto_doapplication.dashboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,55 +26,72 @@ class MachineFragment : Fragment() {
     private lateinit var machineAdapter: MachineAdapter
 
     lateinit var progressStateList: Array<String>
-    lateinit var machineList: Array<String>
+    lateinit var progressBar : ProgressBar
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_machine, container, false)
 
-//        machineList = resources.getStringArray(R.array.machineList)
-//        UiUtil.showToast(this.requireContext(), machineList[0])
-
+        progressBar = view.findViewById(R.id.progress_bar)
 
         recyclerView = view.findViewById(R.id.machine_list)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
-        getData()
-
-        prepareMachineData()
+        getDataFromFirebase()
 
         return view
     }
 
-    private fun getData() {
-
-
-        progressStateList = arrayOf(
-            "Not Started",
-            "In Progress",
-            "Completed"
-        )
+    fun setInProgress(inProgress : Boolean) {
+        if (inProgress) {
+            progressBar.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        } else {
+            progressBar.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
     }
 
-    private fun prepareMachineData() {
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        
+    private fun getDataFromFirebase() {
         machineData = ArrayList()
-        machineData.add(MachineModel(userId, 1, "Forklift", "In Progress", 1))
-        machineData.add(MachineModel(userId, 2, "Excavator", "Not Started", 0))
-        machineData.add(MachineModel(userId, 3, "Compactor", "Not Started", 0))
-        machineData.add(MachineModel(userId, 4, "Dump-Truck", "Not Started", 0))
-        machineData.add(MachineModel(userId, 5, "Flat-Bed-Truck", "Not Started", 0))
-        machineData.add(MachineModel(userId, 6, "Transit-Mixer", "Not Started", 0))
-        machineData.add(MachineModel(userId, 7, "Grader", "Not Started", 0))
-        machineData.add(MachineModel(userId, 8, "Bulldozer", "Not Started", 0))
-        machineData.add(MachineModel(userId, 9, "Crane", "Not Started", 0))
-        machineData.add(MachineModel(userId, 10, "Road-Roller", "Not Started", 0))
-        machineData.add(MachineModel(userId, 11, "Loader", "Not Started", 0))
-        machineData.add(MachineModel(userId, 12, "Backhoe", "Not Started", 0))
-        machineData.add(MachineModel(userId, 13, "One-Bagger", "Not Started", 0))
 
-        // Populating data inside the RecyclerView
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val userMachinesRef = Firebase.firestore
+            .collection("machines")
+            .document(userId)
+            .collection("userMachines")
+
+        userMachinesRef.get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    for (document in documents) {
+                        val machineId = document.getLong("machineId")?.toInt() ?: 0
+                        val machineName = document.getString("machineName") ?: ""
+                        val progressState = document.getString("progressState") ?: ""
+                        val progressNumber = document.getLong("progressNumber")?.toInt() ?: 0
+
+                        val machine = MachineModel(
+                            machineId,
+                            machineName,
+                            progressState,
+                            progressNumber
+                        )
+                        machineData.add(machine)
+                    }
+                    setInProgress(false)
+                    setDataToRecyclerView()
+                } else {
+                    setInProgress(false)
+                    Log.d("Firestore", "No documents found in userMachines collection.")
+                }
+            }
+            .addOnFailureListener { e ->
+                UiUtil.showToast(requireContext(), e.localizedMessage ?: "Something went wrong")
+                setInProgress(false)
+            }
+    }
+
+    private fun setDataToRecyclerView() {
         machineAdapter = MachineAdapter(machineData)
         recyclerView.adapter = machineAdapter
 
@@ -82,23 +101,7 @@ class MachineFragment : Fragment() {
                 putExtra("machine_name", machine.machineName)
             }
             startActivity(intent)
-
-            Toast.makeText(context, "Machine Name: ${machine.machineName} Machine Id: ${machine.machineId}", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun getDataFromFirebase() {
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
-        Firebase.firestore
-            .collection("machines")
-            .document(userId)
-            .collection(1.toString())
-            .get()
-
-
-        val machineData = ArrayList<MachineModel>()
-
     }
 
 //    private fun updateProgress() {

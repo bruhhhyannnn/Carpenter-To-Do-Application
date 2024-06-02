@@ -108,8 +108,6 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:background="@drawable/stroke_bottom"/>
-
-
     </LinearLayout>
 
     <!-- FOOTER -->
