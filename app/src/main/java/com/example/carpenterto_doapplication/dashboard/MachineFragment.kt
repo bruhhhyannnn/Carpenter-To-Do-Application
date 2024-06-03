@@ -60,6 +60,7 @@ class MachineFragment : Fragment() {
             .collection("machines")
             .document(userId)
             .collection("userMachines")
+
         setInProgress(true)
         userMachinesRef.get()
             .addOnSuccessListener { documents ->

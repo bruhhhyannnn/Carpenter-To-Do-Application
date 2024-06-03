@@ -17,8 +17,6 @@ class ChecklistAdapter(
     private val machineId: String
 ) : RecyclerView.Adapter<ChecklistAdapter.ChecklistViewHolder>() {
 
-    private val db = FirebaseFirestore.getInstance()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChecklistViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_checklist, parent, false)
         return ChecklistViewHolder(view)
@@ -33,17 +31,18 @@ class ChecklistAdapter(
 
         holder.taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
             tasksCompleted[position] = isChecked
-//            Toast.makeText(, "${tasks[position]} is ${if (isChecked) "completed" else "not completed"}", Toast.LENGTH_SHORT).show()
-            saveProgressToFirestore()
+            saveProgressToFirebase()
         }
     }
 
-    private fun saveProgressToFirestore() {
+    private fun saveProgressToFirebase() {
+        val db = FirebaseFirestore.getInstance()
         val progressData = hashMapOf(
             "tasks_completed" to tasksCompleted.toList() // Convert to list
         )
 
-        db.collection("machines").document(machineId)
+        db.collection("tasks")
+            .document(machineId)
             .set(progressData)
             .addOnSuccessListener {
                 // Handle success

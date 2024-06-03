@@ -134,7 +134,7 @@ class RegistrationActivity : AppCompatActivity() {
 
             val maintenanceData = hashMapOf(
                 "tasksCompleted" to MutableList(taskNames.size) { false },
-                "tasksCompleteName" to taskNames
+                "tasksCompletedName" to taskNames
             )
 
             userMachinesRef.add(maintenanceData)
