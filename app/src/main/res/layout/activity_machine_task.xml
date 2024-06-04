@@ -84,16 +84,5 @@
             android:textColor="@color/black"
             android:fontFamily="@font/montserrat_bold"
             android:text="Generate Report"/>
-
-        <Button
-            android:id="@+id/save_progress_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="18dp"
-            android:layout_marginLeft="20dp"
-            android:backgroundTint="@color/bottom_nav_bar"
-            android:textColor="@color/black"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Save Progress"/>
     </LinearLayout>
 </LinearLayout>

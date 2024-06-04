@@ -246,7 +246,7 @@ class RegistrationActivity : AppCompatActivity() {
 
             userTasksRef.set(maintenanceData)
                 .addOnSuccessListener {
-                    Log.d("Firestore", "Suggested Maintenance for $machine successfully written!")
+                    Log.d("Firestore", "suggestedMaintenance for $machine successfully written!")
                 }
                 .addOnFailureListener { e ->
                     UiUtil.showToast(applicationContext, e.localizedMessage ?: "Something went wrong")

@@ -32,6 +32,10 @@ class SettingsActivity : AppCompatActivity() {
             showAboutAlertDialog()
         }
 
+        binding.changePasswordButton.setOnClickListener {
+            startActivity(Intent(this, SettingsChangePasswordActivity::class.java))
+        }
+
         binding.logoutButton.setOnClickListener {
             showLogoutAlertDialog()
         }

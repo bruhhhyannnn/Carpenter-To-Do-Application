@@ -103,16 +103,4 @@ class MachineFragment : Fragment() {
             startActivity(intent)
         }
     }
-
-//    private fun updateProgress() {
-//        val completedCount = tasksCompleted.count { it }
-//        val progressPercentage = (completedCount.toDouble() / tasksCompleted.size) * 100
-//        val progressState = when {
-//            completedCount == 0 -> "Not started"
-//            completedCount == tasksCompleted.size -> "Completed"
-//            else -> "In Progress"
-//        }
-//
-//        // Update progress and state UI here if needed
-//    }
 }

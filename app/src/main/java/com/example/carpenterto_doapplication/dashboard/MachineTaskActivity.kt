@@ -1,15 +1,11 @@
 package com.example.carpenterto_doapplication.dashboard
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.adapter.ChecklistAdapter
@@ -19,7 +15,6 @@ import com.example.carpenterto_doapplication.util.UiUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -34,8 +29,6 @@ class MachineTaskActivity : AppCompatActivity() {
     private lateinit var machineId: String
     private lateinit var machineName: String
 
-    private val tasks = mutableListOf<String>()
-    private val tasksCompleted = mutableListOf<Boolean>()
     private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,14 +45,21 @@ class MachineTaskActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         bindDate()
-        getDataFromFirebase()
-
-        binding.saveProgressButton.setOnClickListener {
-            Toast.makeText(this, "Saved Progress", Toast.LENGTH_SHORT).show()
-        }
+        setupData()
 
         binding.generateReportButton.setOnClickListener {
-            Toast.makeText(this, "Generate Report", Toast.LENGTH_SHORT).show()
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Do you want to generate report?")
+            builder.setMessage("Please make sure you have completed all the tasks for this maintenance.")
+            builder.setPositiveButton("Generate") { dialog, _ ->
+//                generateReport()
+                Toast.makeText(this, "Generate Report", Toast.LENGTH_SHORT).show()
+            }
+            builder.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            val dialog = builder.create()
+            dialog.show()
         }
     }
 
@@ -73,33 +73,36 @@ class MachineTaskActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDataFromFirebase() {
+    private fun setupData() {
         taskData = ArrayList()
-        retrieveTasksFromCollection("dailyMaintenance")
-        retrieveTasksFromCollection("monthlyMaintenance")
-        retrieveTasksFromCollection("asNeededMaintenance")
+        getDataFromFirebase("dailyMaintenance")
+        getDataFromFirebase("monthlyMaintenance")
+        getDataFromFirebase("asNeededMaintenance")
+        getDataFromFirebase("suggestedMaintenance")
     }
 
-    private fun retrieveTasksFromCollection(collectionName: String) {
+    private fun getDataFromFirebase(collectionName: String) {
+        Log.d("MachineTaskActivity", "getDataFromFirebase: $collectionName")
+        Log.d("MachineTaskActivity", "getDataFromFirebase: $userId")
+        Log.d("MachineTaskActivity", "getDataFromFirebase: $machineName")
+
         setInProgress(true)
         Firebase.firestore
             .collection("tasks")
             .document(userId)
             .collection(collectionName)
+            .document(machineName)
             .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    for (document in documents) {
-                        val tasks = document.get("tasks") as? List<String> ?: emptyList()
-                        val tasksCompleted = document.get("tasksCompleted") as? List<Boolean> ?: emptyList()
-                        val task = TaskModel(tasks, tasksCompleted)
-                        Log.d("Firestore", "Task: $task")
-                        taskData.add(task)
-                    }
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val tasks = document.get("tasks") as? List<String> ?: emptyList()
+                    val tasksCompleted = document.get("tasksCompleted") as? List<Boolean> ?: emptyList()
+                    val task = TaskModel(tasks, tasksCompleted)
+                    taskData.add(task)
+                    Log.d("MachineTaskActivity", "getDataFromFirebase: $taskData")
                     setInProgress(false)
                     setDataToRecyclerView()
                 } else {
-                    Log.d("Firestore", "No documents found in $collectionName collection.")
                     setInProgress(false)
                 }
             }
@@ -110,7 +113,11 @@ class MachineTaskActivity : AppCompatActivity() {
     }
 
     private fun setDataToRecyclerView() {
-        checklistAdapter = ChecklistAdapter(tasks, tasksCompleted.toBooleanArray(), machineId)
+        // can you recheck whats happening here? i dont know what part of the code is wrong but
+        // the checklist is just showing up the first index of the list and doesnt include the rest
+        // when i try to Log the values of the data, it shows up the whole list of tasks
+        // but when i try to run the app, it just shows the first index or data of the list
+        checklistAdapter = ChecklistAdapter(taskData, userId, machineName)
         recyclerView.adapter = checklistAdapter
     }
 
@@ -118,9 +125,5 @@ class MachineTaskActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance().time
         val dateFormat = DateFormat.getDateInstance().format(calendar)
         binding.dateTodayText.text = "Today: $dateFormat"
-    }
-
-    companion object {
-        private const val STORAGE_PERMISSION_CODE = 101
     }
 }

@@ -32,25 +32,11 @@ class MachineAdapter(
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(machine)
         }
-
-//        holder.itemView.setOnClickListener {
-//            itemClickListener.onItemClick(position)
-//        }
     }
 
     class MachineViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val machineName: TextView = itemView.findViewById(R.id.machine_name)
         val progressState: TextView = itemView.findViewById(R.id.progress_state)
         val progressNumber: TextView = itemView.findViewById(R.id.progress_number)
-
-//            init {
-//                val position = adapterPosition
-//                itemView.setOnClickListener {
-//                    if (position != RecyclerView.NO_POSITION) {
-//                        onItemClick?.invoke(machineList[position])
-//                    }
-//                }
-//
-//            }
     }
 }

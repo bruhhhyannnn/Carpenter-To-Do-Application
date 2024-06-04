@@ -42,7 +42,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat_bold"
-                android:text="test"
                 android:textSize="26sp" />
 
             <TextView
@@ -117,7 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:textAlignment="center"
-        android:text="Copyright 2024 Carpenter To-Do Application"
+        android:text="@string/copyright"
         android:padding="20dp"
         android:background="@drawable/stroke_copyright"
         android:layout_alignParentBottom="true">
