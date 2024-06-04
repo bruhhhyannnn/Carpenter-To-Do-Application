@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,8 +27,12 @@ class ReportFragment : Fragment() {
     private var userId = FirebaseAuth.getInstance().currentUser!!.uid
     private lateinit var reportsFound : TextView
 
+    lateinit var progressBar : ProgressBar
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
+
+        progressBar = view.findViewById(R.id.progress_bar)
 
         reportsFound = view.findViewById(R.id.reports_found)
         recyclerView = view.findViewById(R.id.report_list)
@@ -43,13 +48,25 @@ class ReportFragment : Fragment() {
         return view
     }
 
+    private fun setInProgress(inProgress : Boolean) {
+        if (inProgress) {
+            progressBar.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        } else {
+            progressBar.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
+    }
+
     private fun getReportDataFromFirebase() {
+        setInProgress(true)
         Firebase.firestore
             .collection("reports")
             .whereEqualTo("userId", userId)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
+                    setInProgress(false)
                     reportsFound.visibility = View.VISIBLE
                 } else {
                     reportsFound.visibility = View.GONE
@@ -58,6 +75,7 @@ class ReportFragment : Fragment() {
                         reportModel.let {
                             reportData.add(it)
                         }
+                        setInProgress(false)
                         reportAdapter.notifyDataSetChanged()
                     }
 
@@ -65,6 +83,7 @@ class ReportFragment : Fragment() {
             }
             .addOnFailureListener { exception ->
                 UiUtil.showToast(requireContext(), "Failed to fetch data from Firebase: ${exception.message}")
+                setInProgress(false)
             }
     }
 

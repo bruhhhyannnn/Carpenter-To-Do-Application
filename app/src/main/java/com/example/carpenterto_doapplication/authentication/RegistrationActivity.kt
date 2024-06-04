@@ -26,7 +26,6 @@ class RegistrationActivity : AppCompatActivity() {
 
         binding.createAccountButton.setOnClickListener {
             createAccount()
-
         }
 
         binding.loginTextButton.setOnClickListener {
@@ -122,6 +121,7 @@ class RegistrationActivity : AppCompatActivity() {
 
     private fun addMaintenanceTasksToFirebase() {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val machines = resources.getStringArray(R.array.machineList)
         val dailyMaintenance = resources.getStringArray(R.array.daily_maintenance).toList()
         val monthlyMaintenance = resources.getStringArray(R.array.monthly_maintenance).toList()
         val asNeededMaintenance = resources.getStringArray(R.array.as_needed_maintenance).toList()
@@ -132,18 +132,21 @@ class RegistrationActivity : AppCompatActivity() {
                 .document(userId)
                 .collection(collectionName)
 
-            val maintenanceData = hashMapOf(
-                "tasks" to tasks,
-                "tasksCompleted" to MutableList(tasks.size) { false }
-            )
+            for (machine in machines) {
+                val maintenanceData = hashMapOf(
+                    "tasks" to tasks,
+                    "tasksCompleted" to MutableList(tasks.size) { false }
+                )
 
-            userMachinesRef.add(maintenanceData)
-                .addOnSuccessListener {
-                    Log.d("Firestore", "$collectionName for $maintenanceData successfully written!")
-                }
-                .addOnFailureListener { e ->
-                    UiUtil.showToast(applicationContext, e.localizedMessage ?: "Something went wrong")
-                }
+                userMachinesRef.document(machine)
+                    .set(maintenanceData)
+                    .addOnSuccessListener {
+                        Log.d("Firestore", "$collectionName for machine $machine successfully written!")
+                    }
+                    .addOnFailureListener { e ->
+                        UiUtil.showToast(applicationContext, e.localizedMessage ?: "Something went wrong")
+                    }
+            }
         }
 
         addMaintenanceData("dailyMaintenance", dailyMaintenance)

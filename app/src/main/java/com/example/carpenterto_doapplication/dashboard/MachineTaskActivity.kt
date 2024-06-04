@@ -59,11 +59,7 @@ class MachineTaskActivity : AppCompatActivity() {
         }
 
         binding.generateReportButton.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                generateReport()
-            } else {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
-            }
+            Toast.makeText(this, "Generate Report", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -94,7 +90,7 @@ class MachineTaskActivity : AppCompatActivity() {
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     for (document in documents) {
-                        val tasks = document.get("tasksCompleteName") as? List<String> ?: emptyList()
+                        val tasks = document.get("tasks") as? List<String> ?: emptyList()
                         val tasksCompleted = document.get("tasksCompleted") as? List<Boolean> ?: emptyList()
                         val task = TaskModel(tasks, tasksCompleted)
                         Log.d("Firestore", "Task: $task")
@@ -116,65 +112,6 @@ class MachineTaskActivity : AppCompatActivity() {
     private fun setDataToRecyclerView() {
         checklistAdapter = ChecklistAdapter(tasks, tasksCompleted.toBooleanArray(), machineId)
         recyclerView.adapter = checklistAdapter
-    }
-
-    private fun generateReport() {
-//        val workbook: Workbook = XSSFWorkbook()
-//        val sheet = workbook.createSheet("Sheet1")
-//
-//        // Create the header row
-//        val headerRow: Row = sheet.createRow(0)
-//        headerRow.createCell(0).setCellValue("Name: Bryan Jesus Mangapit")
-//        headerRow.createCell(2).setCellValue("Date Generated: 06/01/2024")
-//
-//        val headerRow2: Row = sheet.createRow(1)
-//        headerRow2.createCell(0).setCellValue("Machine Report: 0001")
-//        headerRow2.createCell(2).setCellValue("Time Generated: 10:24PM")
-//
-//        val headerRow3: Row = sheet.createRow(2)
-//        headerRow3.createCell(0).setCellValue("Machine Name: $machineName")
-//
-//        // Skip a row for spacing
-//        sheet.createRow(3)
-//
-//        // Daily Maintenance
-//        val maintenanceRow: Row = sheet.createRow(4)
-//        maintenanceRow.createCell(0).setCellValue("Daily Maintenance")
-//
-//        // Populate data from taskData
-//        var rowIndex = 5
-//        for (task in taskData) {
-//            for (i in task.tasks.indices) {
-//                val dataRow: Row = sheet.createRow(rowIndex++)
-//                dataRow.createCell(0).setCellValue(task.tasks[i])
-//                dataRow.createCell(1).setCellValue(if (task.tasksCompleted[i]) "Yes" else "No")
-//                dataRow.createCell(2).setCellValue(DateFormat.getDateTimeInstance().format(Calendar.getInstance().time))
-//            }
-//        }
-//
-//        val fileName = "Maintenance_Report.xlsx"
-//        val filePath = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
-//
-//        try {
-//            FileOutputStream(filePath).use { outputStream ->
-//                workbook.write(outputStream)
-//                Toast.makeText(this, "Generated Report: $filePath", Toast.LENGTH_SHORT).show()
-//            }
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//            Toast.makeText(this, "Failed to generate report", Toast.LENGTH_SHORT).show()
-//        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == STORAGE_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                generateReport()
-            } else {
-                Toast.makeText(this, "Storage permission denied", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun bindDate() {
