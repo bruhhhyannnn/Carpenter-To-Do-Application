@@ -25,7 +25,6 @@ class MachineFragment : Fragment() {
     private lateinit var machineData: ArrayList<MachineModel>
     private lateinit var machineAdapter: MachineAdapter
 
-    lateinit var progressStateList: Array<String>
     lateinit var progressBar : ProgressBar
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

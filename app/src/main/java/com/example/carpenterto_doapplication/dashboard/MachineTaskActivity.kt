@@ -1,24 +1,25 @@
 package com.example.carpenterto_doapplication.dashboard
 
-import android.content.Intent
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.adapter.ChecklistAdapter
-import com.example.carpenterto_doapplication.adapter.MachineAdapter
-import com.example.carpenterto_doapplication.data_model.MachineModel
 import com.example.carpenterto_doapplication.data_model.TaskModel
 import com.example.carpenterto_doapplication.databinding.ActivityMachineTaskBinding
 import com.example.carpenterto_doapplication.util.UiUtil
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -32,9 +33,9 @@ class MachineTaskActivity : AppCompatActivity() {
 
     private lateinit var machineId: String
     private lateinit var machineName: String
+
     private val tasks = mutableListOf<String>()
     private val tasksCompleted = mutableListOf<Boolean>()
-
     private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,17 +55,19 @@ class MachineTaskActivity : AppCompatActivity() {
         getDataFromFirebase()
 
         binding.saveProgressButton.setOnClickListener {
-//            getDataFromFirebase()
             Toast.makeText(this, "Saved Progress", Toast.LENGTH_SHORT).show()
         }
 
         binding.generateReportButton.setOnClickListener {
-//            generateReport()
-            Toast.makeText(this, "Report Generated", Toast.LENGTH_SHORT).show()
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                generateReport()
+            } else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
+            }
         }
     }
 
-    private fun setInProgress(inProgress : Boolean) {
+    private fun setInProgress(inProgress: Boolean) {
         if (inProgress) {
             binding.progressBar.visibility = View.VISIBLE
             binding.checklistRecyclerView.visibility = View.GONE
@@ -75,42 +78,33 @@ class MachineTaskActivity : AppCompatActivity() {
     }
 
     private fun getDataFromFirebase() {
-
-
-
-
-        tasks.addAll(listOf("Task 1", "Task 2", "Task 3"))
-        tasksCompleted.addAll(List(tasks.size) { false })
-
-
-
-
         taskData = ArrayList()
+        retrieveTasksFromCollection("dailyMaintenance")
+        retrieveTasksFromCollection("monthlyMaintenance")
+        retrieveTasksFromCollection("asNeededMaintenance")
+    }
 
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        val userMachinesRef = Firebase.firestore
+    private fun retrieveTasksFromCollection(collectionName: String) {
+        setInProgress(true)
+        Firebase.firestore
             .collection("tasks")
             .document(userId)
-            .collection("dailyMaintenance")
-
-        setInProgress(true)
-        userMachinesRef.get()
+            .collection(collectionName)
+            .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     for (document in documents) {
-                        // get the data
-
-                        val task = TaskModel(
-                            tasksCompleted,
-                            tasksCompletedName
-                        )
+                        val tasks = document.get("tasksCompleteName") as? List<String> ?: emptyList()
+                        val tasksCompleted = document.get("tasksCompleted") as? List<Boolean> ?: emptyList()
+                        val task = TaskModel(tasks, tasksCompleted)
+                        Log.d("Firestore", "Task: $task")
                         taskData.add(task)
                     }
                     setInProgress(false)
                     setDataToRecyclerView()
                 } else {
+                    Log.d("Firestore", "No documents found in $collectionName collection.")
                     setInProgress(false)
-                    Log.d("Firestore", "No documents found.")
                 }
             }
             .addOnFailureListener { e ->
@@ -124,17 +118,72 @@ class MachineTaskActivity : AppCompatActivity() {
         recyclerView.adapter = checklistAdapter
     }
 
-    private fun saveProgressToFirebase() {
-        // Save progress logic here
+    private fun generateReport() {
+//        val workbook: Workbook = XSSFWorkbook()
+//        val sheet = workbook.createSheet("Sheet1")
+//
+//        // Create the header row
+//        val headerRow: Row = sheet.createRow(0)
+//        headerRow.createCell(0).setCellValue("Name: Bryan Jesus Mangapit")
+//        headerRow.createCell(2).setCellValue("Date Generated: 06/01/2024")
+//
+//        val headerRow2: Row = sheet.createRow(1)
+//        headerRow2.createCell(0).setCellValue("Machine Report: 0001")
+//        headerRow2.createCell(2).setCellValue("Time Generated: 10:24PM")
+//
+//        val headerRow3: Row = sheet.createRow(2)
+//        headerRow3.createCell(0).setCellValue("Machine Name: $machineName")
+//
+//        // Skip a row for spacing
+//        sheet.createRow(3)
+//
+//        // Daily Maintenance
+//        val maintenanceRow: Row = sheet.createRow(4)
+//        maintenanceRow.createCell(0).setCellValue("Daily Maintenance")
+//
+//        // Populate data from taskData
+//        var rowIndex = 5
+//        for (task in taskData) {
+//            for (i in task.tasks.indices) {
+//                val dataRow: Row = sheet.createRow(rowIndex++)
+//                dataRow.createCell(0).setCellValue(task.tasks[i])
+//                dataRow.createCell(1).setCellValue(if (task.tasksCompleted[i]) "Yes" else "No")
+//                dataRow.createCell(2).setCellValue(DateFormat.getDateTimeInstance().format(Calendar.getInstance().time))
+//            }
+//        }
+//
+//        val fileName = "Maintenance_Report.xlsx"
+//        val filePath = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
+//
+//        try {
+//            FileOutputStream(filePath).use { outputStream ->
+//                workbook.write(outputStream)
+//                Toast.makeText(this, "Generated Report: $filePath", Toast.LENGTH_SHORT).show()
+//            }
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//            Toast.makeText(this, "Failed to generate report", Toast.LENGTH_SHORT).show()
+//        }
     }
 
-    private fun generateReport() {
-        // Generate report logic here
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                generateReport()
+            } else {
+                Toast.makeText(this, "Storage permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun bindDate() {
         val calendar = Calendar.getInstance().time
         val dateFormat = DateFormat.getDateInstance().format(calendar)
-        binding.dateTodayText.text = "Today: " + dateFormat
+        binding.dateTodayText.text = "Today: $dateFormat"
+    }
+
+    companion object {
+        private const val STORAGE_PERMISSION_CODE = 101
     }
 }
