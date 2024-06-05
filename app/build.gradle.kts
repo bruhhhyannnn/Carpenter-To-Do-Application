@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation("org.apache.poi:poi:3.17")
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)

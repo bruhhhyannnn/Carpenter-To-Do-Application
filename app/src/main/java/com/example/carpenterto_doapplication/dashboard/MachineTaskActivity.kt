@@ -1,9 +1,7 @@
 package com.example.carpenterto_doapplication.dashboard
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +15,18 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.DateFormat
 import java.util.Calendar
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Environment
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import org.apache.poi.hssf.usermodel.HSSFCell
+import org.apache.poi.hssf.usermodel.HSSFRow
+import org.apache.poi.hssf.usermodel.HSSFSheet
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class MachineTaskActivity : AppCompatActivity() {
 
@@ -52,8 +62,7 @@ class MachineTaskActivity : AppCompatActivity() {
             builder.setTitle("Do you want to generate report?")
             builder.setMessage("Please make sure you have completed all the tasks for this maintenance.")
             builder.setPositiveButton("Generate") { dialog, _ ->
-                // generateReport()
-                Toast.makeText(this, "Generate Report", Toast.LENGTH_SHORT).show()
+                generateReport()
             }
             builder.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
@@ -115,6 +124,48 @@ class MachineTaskActivity : AppCompatActivity() {
         checklistAdapter = ChecklistAdapter(taskData, userId, machineName)
         recyclerView.adapter = checklistAdapter
         checklistAdapter.notifyDataSetChanged()
+    }
+
+    private fun generateReport() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            return
+        }
+
+        val hssfWorkbook = HSSFWorkbook()
+        val hssfSheet: HSSFSheet = hssfWorkbook.createSheet("Machine Report")
+
+        val row: HSSFRow = hssfSheet.createRow(0)
+        val cell: HSSFCell = row.createCell(0)
+        cell.setCellValue(machineName)
+
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val reportFile = File(downloadsDir, "machine_report.xls")
+
+        try {
+            FileOutputStream(reportFile).use { fileOutputStream ->
+                hssfWorkbook.write(fileOutputStream)
+                UiUtil.showToast(this, "Report Generated to Downloads!")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            UiUtil.showToast(this, "Error saving report")
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    generateReport()
+                } else {
+                    UiUtil.showToast(this, "Write permission is required to generate the report")
+                }
+                return
+            }
+        }
     }
 
     private fun bindDate() {
