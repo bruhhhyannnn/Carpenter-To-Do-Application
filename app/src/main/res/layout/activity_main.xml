@@ -48,8 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat_bold"
-                android:textSize="26sp" />
-
+                android:textSize="28sp" />
             <TextView
                 android:id="@+id/date_today_text"
                 android:layout_width="wrap_content"

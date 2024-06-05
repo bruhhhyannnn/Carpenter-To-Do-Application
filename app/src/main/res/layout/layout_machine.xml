@@ -27,14 +27,17 @@
             android:layout_height="wrap_content"
             android:background="@drawable/stroke_tasks_model"
             android:gravity="center"
-            android:padding="26dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="26dp"
+            android:paddingBottom="26dp">
             <TextView
                 android:id="@+id/machine_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Forklift"
-                android:textSize="17sp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <com.google.android.material.divider.MaterialDivider

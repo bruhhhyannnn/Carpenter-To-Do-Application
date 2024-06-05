@@ -14,20 +14,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="-280dp"
+        android:layout_marginTop="-290dp"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:src="@drawable/mmsu_logo"/>
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:src="@drawable/mmsu_coe_logo"/>
-
     </LinearLayout>
-
 
     <TextView
         android:id="@+id/textView3"
@@ -47,6 +45,4 @@
         android:layout_marginTop="-398dp"
         android:layout_marginEnd="11dp"
         android:indeterminateTint="@color/white" />
-
-
 </LinearLayout>
