@@ -12,8 +12,8 @@
         android:id="@+id/checkBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/button"
         android:paddingStart="14dp"
+        android:paddingEnd="14dp"
         android:textSize="18sp"
         android:text="Checklist Item"/>
 </LinearLayout>

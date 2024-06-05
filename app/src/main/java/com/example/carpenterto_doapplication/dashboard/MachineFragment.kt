@@ -1,5 +1,6 @@
 package com.example.carpenterto_doapplication.dashboard
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,9 +15,9 @@ import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.adapter.MachineAdapter
 import com.example.carpenterto_doapplication.data_model.MachineModel
 import com.example.carpenterto_doapplication.util.UiUtil
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class MachineFragment : Fragment() {
 
@@ -25,7 +25,7 @@ class MachineFragment : Fragment() {
     private lateinit var machineData: ArrayList<MachineModel>
     private lateinit var machineAdapter: MachineAdapter
 
-    lateinit var progressBar : ProgressBar
+    lateinit var progressBar: ProgressBar
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_machine, container, false)
@@ -46,7 +46,7 @@ class MachineFragment : Fragment() {
         getDataFromFirebase()  // Refresh data when fragment is resumed
     }
 
-    private fun setInProgress(inProgress : Boolean) {
+    private fun setInProgress(inProgress: Boolean) {
         if (inProgress) {
             progressBar.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
@@ -69,6 +69,7 @@ class MachineFragment : Fragment() {
         userMachinesRef.get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
+                    machineData.clear()  // Clear old data before adding new data
                     for (document in documents) {
                         val machineId = document.getLong("machineId")?.toInt() ?: 0
                         val machineName = document.getString("machineName") ?: ""

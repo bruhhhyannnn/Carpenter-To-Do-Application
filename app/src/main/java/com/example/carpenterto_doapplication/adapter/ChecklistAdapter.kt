@@ -39,8 +39,6 @@ class ChecklistAdapter(
         // Set a new listener for the checkbox
         holder.taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
             updateTaskCompletionStatus(position, isChecked)
-            val message = if (isChecked) "$task checked" else "$task unchecked"
-            Toast.makeText(holder.itemView.context, message, Toast.LENGTH_SHORT).show()
         }
     }
 

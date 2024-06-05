@@ -6,6 +6,5 @@
         <item name="android:statusBarColor">@color/black</item>
         <item name="android:textColor">@color/black</item>
     </style>
-
     <style name="Theme.CarpenterToDoApplication" parent="Base.Theme.CarpenterToDoApplication" />
 </resources>
