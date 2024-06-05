@@ -32,6 +32,7 @@ class SplashWelcomeActivity : AppCompatActivity() {
                 if (!documents.isEmpty) {
                     binding.nameText.text = documents.documents[0].data?.get("fullName").toString().substringBefore(" ")
                 } else {
+                    logout()
                     UiUtil.showToast(applicationContext, "User document not found")
                 }
             }
@@ -43,5 +44,12 @@ class SplashWelcomeActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }, 3000)
+    }
+
+    fun logout() {
+        FirebaseAuth.getInstance().signOut()
+        val intent = Intent(this, SplashActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 }

@@ -52,7 +52,7 @@ class MachineTaskActivity : AppCompatActivity() {
             builder.setTitle("Do you want to generate report?")
             builder.setMessage("Please make sure you have completed all the tasks for this maintenance.")
             builder.setPositiveButton("Generate") { dialog, _ ->
-//                generateReport()
+                // generateReport()
                 Toast.makeText(this, "Generate Report", Toast.LENGTH_SHORT).show()
             }
             builder.setNegativeButton("Cancel") { dialog, _ ->
@@ -82,10 +82,6 @@ class MachineTaskActivity : AppCompatActivity() {
     }
 
     private fun getDataFromFirebase(collectionName: String) {
-        Log.d("MachineTaskActivity", "getDataFromFirebase: $collectionName")
-        Log.d("MachineTaskActivity", "getDataFromFirebase: $userId")
-        Log.d("MachineTaskActivity", "getDataFromFirebase: $machineName")
-
         setInProgress(true)
         Firebase.firestore
             .collection("tasks")
@@ -99,7 +95,6 @@ class MachineTaskActivity : AppCompatActivity() {
                     val tasksCompleted = document.get("tasksCompleted") as? List<Boolean> ?: emptyList()
                     val task = TaskModel(tasks, tasksCompleted)
                     taskData.add(task)
-                    Log.d("MachineTaskActivity", "getDataFromFirebase: $taskData")
                     setInProgress(false)
                     setDataToRecyclerView()
                 } else {
@@ -119,6 +114,7 @@ class MachineTaskActivity : AppCompatActivity() {
         // but when i try to run the app, it just shows the first index or data of the list
         checklistAdapter = ChecklistAdapter(taskData, userId, machineName)
         recyclerView.adapter = checklistAdapter
+        checklistAdapter.notifyDataSetChanged()
     }
 
     private fun bindDate() {

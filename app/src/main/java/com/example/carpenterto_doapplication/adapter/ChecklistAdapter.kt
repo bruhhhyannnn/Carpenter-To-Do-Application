@@ -1,6 +1,5 @@
 package com.example.carpenterto_doapplication.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ class ChecklistAdapter(
     }
 
     override fun getItemCount(): Int {
-        return taskList.size
+        return taskList.sumOf { it.tasks.size }
     }
 
     override fun onBindViewHolder(holder: ChecklistViewHolder, position: Int) {
@@ -32,11 +31,13 @@ class ChecklistAdapter(
 
         holder.taskCheckBox.text = task
         holder.taskCheckBox.isChecked = taskCompleted
-        Log.d("ChecklistAdapter", "Task List: $taskList")
-        Log.d("ChecklistAdapter", "Task: $task, Completed: $taskCompleted")
 
+        // Remove any existing listener before setting a new one
+        holder.taskCheckBox.setOnCheckedChangeListener(null)
+
+        // Set a new listener for the checkbox
         holder.taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
-//            updateTaskCompletionStatus(position, isChecked)
+            updateTaskCompletionStatus(position, isChecked)
             val message = if (isChecked) "$task checked" else "$task unchecked"
             Toast.makeText(holder.itemView.context, message, Toast.LENGTH_SHORT).show()
         }
@@ -54,20 +55,25 @@ class ChecklistAdapter(
         throw IndexOutOfBoundsException("Invalid position")
     }
 
-//    private fun updateTaskCompletionStatus(position: Int, isCompleted: Boolean) {
-//        var count = 0
-//        for (taskModel in taskList) {
-//            if (position < count + taskModel.tasks.size) {
-//                val localPosition = position - count
-//                taskModel.tasksCompleted[localPosition] = isCompleted
-//                saveProgressToFirebase(taskModel.tasks, taskModel.tasksCompleted)
-//                return
-//            }
-//            count += taskModel.tasks.size
-//        }
-//    }
+    private fun updateTaskCompletionStatus(position: Int, isCompleted: Boolean) {
+        var count = 0
+        for (taskModel in taskList) {
+            if (position < count + taskModel.tasks.size) {
+                val localPosition = position - count
+                val updatedTasksCompleted = taskModel.tasksCompleted.toMutableList()
+                updatedTasksCompleted[localPosition] = isCompleted
+
+                // Save the updated tasksCompleted list to Firebase
+                saveProgressToFirebase(taskModel.tasks, updatedTasksCompleted)
+                taskModel.tasksCompleted = updatedTasksCompleted // Update the original list to keep UI and data in sync
+                return
+            }
+            count += taskModel.tasks.size
+        }
+    }
 
     private fun saveProgressToFirebase(tasks: List<String>, tasksCompleted: List<Boolean>) {
+        // First, update the tasks collection
         Firebase.firestore
             .collection("tasks")
             .document(userId)
@@ -75,24 +81,34 @@ class ChecklistAdapter(
             .document(machineName)
             .update(mapOf("tasks" to tasks, "tasksCompleted" to tasksCompleted))
 
+        // Calculate progress
+        val completedCount = tasksCompleted.count { it }
+        val progressPercentage = (completedCount.toDouble() / tasksCompleted.size) * 100
+        val progressState = when {
+            completedCount == 0 -> "Not started"
+            completedCount == tasksCompleted.size -> "Completed"
+            else -> "In Progress"
+        }
+
+        // Update the machines collection
         Firebase.firestore
             .collection("machines")
             .document(userId)
             .collection("userMachines")
             .whereEqualTo("machineName", machineName)
-            // i want to update the machines collection with the new tasks and tasksCompleted lists
-            // i want to update machines --> userId --> userMachines --> collection --> machineName
-            // and i want to update the progressNumber and progressState
-
-            // something like this:
-//        val completedCount = tasksCompleted.count { it }
-//        val progressPercentage = (completedCount.toDouble() / tasksCompleted.size) * 100
-//        val progressState = when {
-//            completedCount == 0 -> "Not started"
-//            completedCount == tasksCompleted.size -> "Completed"
-//            else -> "In Progress"
-//        }
-
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    document.reference.update(
+                        mapOf(
+                            "tasks" to tasks,
+                            "tasksCompleted" to tasksCompleted,
+                            "progressNumber" to progressPercentage,
+                            "progressState" to progressState
+                        )
+                    )
+                }
+            }
     }
 
     class ChecklistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
