@@ -5,17 +5,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="10dp"
-    app:cardElevation="10dp"
+    app:cardElevation="5dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?selectableItemBackground"
     android:padding="5dp"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
     android:id="@+id/cardView">
 
     <LinearLayout
         android:id="@+id/linear_layout"
-        android:layout_width="190dp"
+        android:layout_width="170dp"
         android:layout_height="match_parent"
         android:background="@drawable/stroke_tasks"
         android:elevation="10dp"

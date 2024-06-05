@@ -29,11 +29,12 @@ class ChecklistAdapter(
     override fun onBindViewHolder(holder: ChecklistViewHolder, position: Int) {
         val (task, taskCompleted) = getTaskAtPosition(position)
 
+        // Reset listener to avoid unexpected behavior during recycling
+        holder.taskCheckBox.setOnCheckedChangeListener(null)
+
+        // Set checkbox text and checked status
         holder.taskCheckBox.text = task
         holder.taskCheckBox.isChecked = taskCompleted
-
-        // Remove any existing listener before setting a new one
-        holder.taskCheckBox.setOnCheckedChangeListener(null)
 
         // Set a new listener for the checkbox
         holder.taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -42,6 +43,7 @@ class ChecklistAdapter(
             Toast.makeText(holder.itemView.context, message, Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun getTaskAtPosition(position: Int): Pair<String, Boolean> {
         var count = 0
@@ -66,6 +68,9 @@ class ChecklistAdapter(
                 // Save the updated tasksCompleted list to Firebase
                 saveProgressToFirebase(taskModel.tasks, updatedTasksCompleted)
                 taskModel.tasksCompleted = updatedTasksCompleted // Update the original list to keep UI and data in sync
+
+                // Notify the adapter of the change
+                notifyItemChanged(position)
                 return
             }
             count += taskModel.tasks.size
