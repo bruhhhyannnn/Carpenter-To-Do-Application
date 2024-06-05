@@ -41,6 +41,11 @@ class MachineFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        getDataFromFirebase()  // Refresh data when fragment is resumed
+    }
+
     private fun setInProgress(inProgress : Boolean) {
         if (inProgress) {
             progressBar.visibility = View.VISIBLE
