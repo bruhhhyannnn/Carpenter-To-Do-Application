@@ -7,5 +7,4 @@
     <item android:title="Reports"
         android:icon="@drawable/icon_report"
         android:id="@+id/bottom_menu_reports"/>
-
 </menu>

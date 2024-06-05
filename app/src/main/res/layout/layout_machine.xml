@@ -49,12 +49,32 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/progress_state"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Pending" />
+                android:layout_weight="1" >
+
+                <TextView
+                    android:id="@+id/progress_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:layout_marginRight="5dp"/>
+                <ImageView
+                    android:id="@+id/complete_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:src="@drawable/icon_complete_circle" />
+                <ImageView
+                    android:id="@+id/incomplete_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:src="@drawable/icon_incomplete_circle" />
+            </LinearLayout>
             <TextView
                 android:id="@+id/progress_number"
                 android:layout_width="wrap_content"

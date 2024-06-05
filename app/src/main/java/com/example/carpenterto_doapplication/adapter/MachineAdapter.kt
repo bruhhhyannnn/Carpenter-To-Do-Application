@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,14 @@ class MachineAdapter(
 
         holder.horizontalProgressBar.max = 1000
         animateHorizontalProgressBar(holder.horizontalProgressBar, machine.progressNumber)
+        if (machine.progressState == "Completed") {
+            holder.completeImage.visibility = View.VISIBLE
+        } else if (machine.progressState == "In Progress") {
+            holder.incompleteImage.visibility = View.VISIBLE
+        } else {
+            holder.completeImage.visibility = View.GONE
+            holder.incompleteImage.visibility = View.GONE
+        }
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(machine)
@@ -50,5 +59,7 @@ class MachineAdapter(
         val progressState: TextView = itemView.findViewById(R.id.progress_state)
         val progressNumber: TextView = itemView.findViewById(R.id.progress_number)
         val horizontalProgressBar: ProgressBar = itemView.findViewById(R.id.horizontal_progress_bar)
+        val completeImage: ImageView = itemView.findViewById(R.id.complete_circle)
+        val incompleteImage: ImageView = itemView.findViewById(R.id.incomplete_circle)
     }
 }

@@ -80,7 +80,6 @@
         android:background="@drawable/stroke_top"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconSize="36dp"
-        android:layout_alignParentBottom="true">
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

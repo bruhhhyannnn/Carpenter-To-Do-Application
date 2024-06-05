@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Carpenter To-Do Application</string>
+    <string name="app_name">Upgrades and Upkeeps</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Strings used for fragments for navigation -->
@@ -46,7 +46,7 @@
     </string>
 
     <string name="copyright">
-        Copyright 2024 Carpenter To-Do Application
+        Copyright 2024 Upgrades and Upkeeps
     </string>
 
     <string-array name="machineList">

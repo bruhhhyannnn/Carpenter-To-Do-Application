@@ -24,36 +24,25 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        Firebase.firestore
-//            .collection("users")
-//            .whereEqualTo("id", FirebaseAuth.getInstance().currentUser!!.uid)
-//            .get()
-//            .addOnSuccessListener {
-//                postcount.text = it.size().toString()
-//            }
-
-
-
-
-
-        replaceFragment(MachineFragment())
         bindHeader()
+        replaceFragment(MachineFragment())
 
         binding.settingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         binding.bottomNavBar.setOnItemSelectedListener { menuItem ->
-            when(menuItem.itemId) {
+            when (menuItem.itemId) {
                 R.id.bottom_menu_tasks -> {
                     replaceFragment(MachineFragment())
+                    true
                 }
                 R.id.bottom_menu_reports -> {
                     replaceFragment(ReportFragment())
+                    true
                 }
-
+                else -> false
             }
-            false
         }
     }
 
@@ -75,10 +64,11 @@ class MainActivity : AppCompatActivity() {
         binding.dateTodayText.text = "Today: " + dateFormat
     }
 
-    fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 }
