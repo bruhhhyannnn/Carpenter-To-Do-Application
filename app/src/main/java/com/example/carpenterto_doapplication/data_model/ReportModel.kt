@@ -4,8 +4,7 @@ import java.util.UUID
 
 data class ReportModel(
     var reportId: String = UUID.randomUUID().toString(),
-    var reportTitle: String = "",
+    var machineName: String = "",
     var reportDate : String = "",
-    var reportTime : String = "",
-    var userId : String = ""
+    var reportTime : String = ""
 )

@@ -107,7 +107,8 @@ class RegistrationActivity : AppCompatActivity() {
                 "progressState" to "Not Started",
                 "progressNumber" to 0,
             )
-            userMachinesRef.add(machineData)
+            userMachinesRef.document(machine)
+                .set(machineData)
                 .addOnSuccessListener {
                     Log.d("Firestore", "Added $machine to userMachines!")
                 }

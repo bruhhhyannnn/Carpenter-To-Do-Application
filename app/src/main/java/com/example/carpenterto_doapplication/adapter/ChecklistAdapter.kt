@@ -76,7 +76,7 @@ class ChecklistAdapter(
     }
 
     private fun saveProgressToFirebase(tasks: List<String>, tasksCompleted: List<Boolean>) {
-        // First, update the tasks collection
+        // Update `tasks` collection
         Firebase.firestore
             .collection("tasks")
             .document(userId)
@@ -93,7 +93,7 @@ class ChecklistAdapter(
             else -> "In Progress"
         }
 
-        // Update the machines collection
+        // Update `machines` collection
         Firebase.firestore
             .collection("machines")
             .document(userId)
@@ -104,8 +104,6 @@ class ChecklistAdapter(
                 for (document in querySnapshot.documents) {
                     document.reference.update(
                         mapOf(
-                            "tasks" to tasks,
-                            "tasksCompleted" to tasksCompleted,
                             "progressNumber" to progressPercentage,
                             "progressState" to progressState
                         )
