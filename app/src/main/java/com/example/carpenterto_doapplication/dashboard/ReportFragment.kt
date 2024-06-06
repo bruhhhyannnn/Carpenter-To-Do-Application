@@ -86,11 +86,4 @@ class ReportFragment : Fragment() {
                 setInProgress(false)
             }
     }
-
-//    private fun deleteReport(position: Int) {
-//        reportData.removeAt(position)
-//        reportAdapter.notifyDataSetChanged()
-//
-//    }
-
 }

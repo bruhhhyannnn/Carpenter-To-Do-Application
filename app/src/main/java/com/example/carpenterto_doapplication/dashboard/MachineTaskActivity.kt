@@ -140,22 +140,24 @@ class MachineTaskActivity : AppCompatActivity() {
                     }
                     val progressPercentage = (completedTasks.size.toDouble() / taskData.sumOf { it.tasks.size }) * 100
 
+                    // Add report to `reports` collection
+                    val reportsCollection = Firebase.firestore.collection("reports")
+                    val reportRef = reportsCollection.document() // Automatically generates a unique ID
+                    val reportId = reportRef.id // Get the generated ID
+
                     // Create report map
                     val reportData = mapOf(
+                        "reportId" to reportId,
                         "userId" to userId,
                         "fullName" to fullName,
                         "machineName" to machineName,
                         "reportDate" to reportDate,
                         "reportTime" to reportTime,
                         "progressState" to progressState,
-                        "progressNumber" to progressPercentage,
+                        "progressNumber" to progressPercentage
                     )
 
-                    // Add report to `reports` collection
-                    val reportsCollection = Firebase.firestore.collection("reports")
-                    reportsCollection.add(reportData).addOnSuccessListener { reportRef ->
-                        UiUtil.showToast(this, "Report data saved to Firebase")
-
+                    reportRef.set(reportData).addOnSuccessListener {
                         // For each maintenance type, save completed tasks to sub-collections
                         val maintenanceTypes = listOf("dailyMaintenance", "monthlyMaintenance", "asNeededMaintenance", "suggestedMaintenance")
 
@@ -180,10 +182,10 @@ class MachineTaskActivity : AppCompatActivity() {
 
                                         reportRef.collection(maintenanceType).add(maintenanceData)
                                             .addOnSuccessListener {
-                                                UiUtil.showToast(this, "$maintenanceType tasks saved to report")
+                                                Log.d("MachineTaskActivity", "$maintenanceType tasks saved to report")
                                             }
                                             .addOnFailureListener { e ->
-                                                UiUtil.showToast(this, e.localizedMessage ?: "Failed to save $maintenanceType tasks")
+                                                Log.e("MachineTaskActivity", "Failed to save $maintenanceType tasks", e)
                                             }
                                     }
                                 }
@@ -194,11 +196,12 @@ class MachineTaskActivity : AppCompatActivity() {
 
                         getReportDataFromFirebase()
                     }.addOnFailureListener { e ->
-                        UiUtil.showToast(this, e.localizedMessage ?: "Failed to save report data")
+                        UiUtil.showToast(this, e.localizedMessage ?: "Failed to generate report")
                     }
                 }
             }
     }
+
 
     private fun getReportDataFromFirebase() {
         Firebase.firestore
