@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?selectableItemBackground">
+
+    <LinearLayout
+        android:id="@+id/parent_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/nav_bar"
+        android:padding="13dp">
+
+        <TextView
+            android:id="@+id/maintenance_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Daily Maintenance"
+            android:fontFamily="@font/montserrat_bold"
+            android:textSize="16sp" />
+        <ImageView
+            android:id="@+id/left_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_arrow_left" />
+        <ImageView
+            android:id="@+id/drop_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:src="@drawable/icon_arrow_drop_down" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tasks_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/parent_item" />
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="24dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tasks_list"
+        app:layout_constraintStart_toStartOf="@+id/tasks_list"
+        app:layout_constraintTop_toBottomOf="@+id/parent_item" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

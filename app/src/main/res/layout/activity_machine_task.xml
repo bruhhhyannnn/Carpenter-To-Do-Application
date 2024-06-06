@@ -75,7 +75,7 @@
                 android:textSize="26sp"
                 android:textStyle="bold"/>
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/checklist_recycler_view"
+                android:id="@+id/parent_recycler_view"
                 android:layout_below="@+id/machine_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>

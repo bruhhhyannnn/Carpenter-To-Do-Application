@@ -1,5 +1,6 @@
 package com.example.carpenterto_doapplication.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,15 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.data_model.TaskModel
+import com.example.carpenterto_doapplication.util.UiUtil
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class ChecklistAdapter(
     private val taskList: List<TaskModel>,
     private val userId: String,
-    private val machineName: String
+    private val machineName: String,
+    private val maintenanceType: String
 ) : RecyclerView.Adapter<ChecklistAdapter.ChecklistViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChecklistViewHolder {
@@ -32,7 +35,6 @@ class ChecklistAdapter(
         // Reset listener to avoid unexpected behavior during recycling
         holder.taskCheckBox.setOnCheckedChangeListener(null)
 
-        // Set checkbox text and checked status
         holder.taskCheckBox.text = task
         holder.taskCheckBox.isChecked = taskCompleted
 
@@ -80,7 +82,7 @@ class ChecklistAdapter(
         Firebase.firestore
             .collection("tasks")
             .document(userId)
-            .collection("dailyMaintenance") // Assuming all tasks are from dailyMaintenance
+            .collection(maintenanceType)
             .document(machineName)
             .update(mapOf("tasks" to tasks, "tasksCompleted" to tasksCompleted))
 
@@ -90,7 +92,7 @@ class ChecklistAdapter(
         val progressState = when {
             completedCount == 0 -> "Not started"
             completedCount == tasksCompleted.size -> "Completed"
-            else -> "Not Completed"
+            else -> "In Progress"
         }
 
         // Update `machines` collection

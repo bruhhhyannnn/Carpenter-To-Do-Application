@@ -8,7 +8,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.carpenterto_doapplication.adapter.ChecklistAdapter
+import com.example.carpenterto_doapplication.R
+import com.example.carpenterto_doapplication.adapter.ParentChecklistAdapter
+import com.example.carpenterto_doapplication.data_model.MaintenanceTypesModel
 import com.example.carpenterto_doapplication.data_model.TaskModel
 import com.example.carpenterto_doapplication.databinding.ActivityMachineTaskBinding
 import com.example.carpenterto_doapplication.util.UiUtil
@@ -17,7 +19,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.apache.poi.hssf.usermodel.HSSFSheet
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import org.apache.poi.ss.util.CellRangeAddress
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -27,9 +28,10 @@ import java.util.Calendar
 class MachineTaskActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMachineTaskBinding
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var checklistAdapter: ChecklistAdapter
+    private lateinit var parentRecyclerView: RecyclerView
+    private lateinit var parentChecklistAdapter: ParentChecklistAdapter
     private lateinit var taskData: ArrayList<TaskModel>
+    private lateinit var parentData: ArrayList<MaintenanceTypesModel>
     private lateinit var machineId: String
     private lateinit var machineName: String
     private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
@@ -43,12 +45,12 @@ class MachineTaskActivity : AppCompatActivity() {
         machineName = intent.getStringExtra("machine_name") ?: ""
         binding.machineName.text = machineName
 
-        recyclerView = binding.checklistRecyclerView
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        parentRecyclerView = binding.parentRecyclerView
+        parentRecyclerView.setHasFixedSize(true)
+        parentRecyclerView.layoutManager = LinearLayoutManager(this)
 
         bindDate()
-        setupData()
+        setupTasksData()
 
         binding.generateReportButton.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -81,23 +83,33 @@ class MachineTaskActivity : AppCompatActivity() {
     private fun setInProgress(inProgress: Boolean) {
         if (inProgress) {
             binding.progressBar.visibility = View.VISIBLE
-            binding.checklistRecyclerView.visibility = View.GONE
+            binding.parentRecyclerView.visibility = View.GONE
         } else {
             binding.progressBar.visibility = View.GONE
-            binding.checklistRecyclerView.visibility = View.VISIBLE
+            binding.parentRecyclerView.visibility = View.VISIBLE
         }
     }
 
-    private fun setupData() {
-        taskData = ArrayList()
-        getMachineTaskDataFromFirebase("dailyMaintenance")
-        getMachineTaskDataFromFirebase("monthlyMaintenance")
-        getMachineTaskDataFromFirebase("asNeededMaintenance")
-        getMachineTaskDataFromFirebase("suggestedMaintenance")
+    private fun setupTasksData() {
+        parentData = ArrayList()
+        parentData.add(MaintenanceTypesModel("Daily Maintenance", R.drawable.icon_arrow_left, ArrayList(), false))
+        parentData.add(MaintenanceTypesModel("Monthly Maintenance", R.drawable.icon_arrow_left, ArrayList(), false))
+        parentData.add(MaintenanceTypesModel("As Needed Maintenance", R.drawable.icon_arrow_left, ArrayList(), false))
+        parentData.add(MaintenanceTypesModel("Suggested Maintenance", R.drawable.icon_arrow_left, ArrayList(), false))
+
+        // Initialize the adapter with the lambda function for data fetching
+        parentChecklistAdapter = ParentChecklistAdapter(parentData, userId, machineName, ::getMachineTaskDataFromFirebase)
+        parentRecyclerView.adapter = parentChecklistAdapter
+
+        // Initial data fetching for the categories
+        getMachineTaskDataFromFirebase("dailyMaintenance", 0)
+        getMachineTaskDataFromFirebase("monthlyMaintenance", 1)
+        getMachineTaskDataFromFirebase("asNeededMaintenance", 2)
+        getMachineTaskDataFromFirebase("suggestedMaintenance", 3)
     }
 
-    private fun getMachineTaskDataFromFirebase(collectionName: String) {
-        setInProgress(true)
+    private fun getMachineTaskDataFromFirebase(collectionName: String, index: Int, callback: (TaskModel) -> Unit = {}) {
+//        setInProgress(true)
         Firebase.firestore
             .collection("tasks")
             .document(userId)
@@ -109,9 +121,10 @@ class MachineTaskActivity : AppCompatActivity() {
                     val tasks = document.get("tasks") as? List<String> ?: emptyList()
                     val tasksCompleted = document.get("tasksCompleted") as? List<Boolean> ?: emptyList()
                     val task = TaskModel(tasks, tasksCompleted)
-                    taskData.add(task)
-                    setInProgress(false)
+                    parentData[index].childItemList.add(task)
+//                    setInProgress(false)
                     setDataToRecyclerView()
+                    callback(task)
                 } else {
                     setInProgress(false)
                 }
@@ -123,9 +136,7 @@ class MachineTaskActivity : AppCompatActivity() {
     }
 
     private fun setDataToRecyclerView() {
-        checklistAdapter = ChecklistAdapter(taskData, userId, machineName)
-        recyclerView.adapter = checklistAdapter
-        checklistAdapter.notifyDataSetChanged()
+        parentChecklistAdapter.notifyDataSetChanged()
     }
 
     private fun setReportDataToFirebase() {
