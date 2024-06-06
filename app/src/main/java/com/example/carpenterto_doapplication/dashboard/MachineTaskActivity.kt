@@ -56,12 +56,25 @@ class MachineTaskActivity : AppCompatActivity() {
             builder.setMessage("Please make sure you have completed all the tasks for this maintenance.")
             builder.setPositiveButton("Generate") { _, _ ->
                 setReportDataToFirebase()
+                setInProgressBackground(true)
             }
             builder.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             val dialog = builder.create()
             dialog.show()
+        }
+    }
+
+    private fun setInProgressBackground(inProgress: Boolean) {
+        if (inProgress) {
+            binding.loadingBackground.visibility = View.VISIBLE
+            binding.centerProgressBar.visibility = View.VISIBLE
+            binding.mainActivityLayout.visibility = View.GONE
+        } else {
+            binding.loadingBackground.visibility = View.GONE
+            binding.centerProgressBar.visibility = View.GONE
+            binding.mainActivityLayout.visibility = View.VISIBLE
         }
     }
 
@@ -276,9 +289,8 @@ class MachineTaskActivity : AppCompatActivity() {
             row = hssfSheet.createRow(4)
             row.createCell(0).setCellValue("Report State: $progressState")
 
-            val progressPercentage = "${(progressNumber * 100).toInt()}%"
             row = hssfSheet.createRow(5)
-            row.createCell(0).setCellValue("Report Progress: $progressPercentage")
+            row.createCell(0).setCellValue("Report Progress: $progressNumber% Done")
 
             // Create maintenance sections
             val sections = mapOf(
@@ -313,6 +325,7 @@ class MachineTaskActivity : AppCompatActivity() {
             try {
                 FileOutputStream(reportFile).use { fileOutputStream ->
                     hssfWorkbook.write(fileOutputStream)
+                    setInProgressBackground(false)
                     UiUtil.showToast(this, "Report Generated to Downloads!")
                 }
             } catch (e: IOException) {

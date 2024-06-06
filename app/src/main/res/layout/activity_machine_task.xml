@@ -1,88 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     android:background="@color/white"
     tools:context=".dashboard.MachineTaskActivity">
 
-    <!-- HEADER -->
+    <View
+        android:id="@+id/loading_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#30000000"/>
+    <ProgressBar
+        android:id="@+id/center_progress_bar"
+        android:layout_width="34dp"
+        android:layout_height="64dp"
+        android:backgroundTint="@color/white"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
     <LinearLayout
+        android:id="@+id/main_activity_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="@drawable/stroke_bottom">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="All Tasks"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Maintenance"
-            android:textSize="26sp"
-            android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/date_today_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Today: 05/17/2024"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <!-- MAIN -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <TextView
-            android:id="@+id/machine_name"
+        <!-- HEADER -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:textSize="26sp"
-            android:textStyle="bold"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/checklist_recycler_view"
-            android:layout_below="@+id/machine_name"
+            android:padding="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/stroke_bottom">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All Tasks"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Maintenance"
+                android:textSize="26sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/date_today_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today: 05/17/2024"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- MAIN -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="24dp"
-            android:layout_height="64dp"
-            android:visibility="gone"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-    <!-- FOOTER -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+            <TextView
+                android:id="@+id/machine_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:textSize="26sp"
+                android:textStyle="bold"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/checklist_recycler_view"
+                android:layout_below="@+id/machine_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="24dp"
+                android:layout_height="64dp"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
 
-        <Button
-            android:id="@+id/generate_report_button"
-            android:layout_width="wrap_content"
+        <!-- FOOTER -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="18dp"
-            android:backgroundTint="@color/bottom_nav_bar"
-            android:textColor="@color/black"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Generate Report"/>
+            android:padding="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/generate_report_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="18dp"
+                android:backgroundTint="@color/bottom_nav_bar"
+                android:textColor="@color/black"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Generate Report"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>
