@@ -57,8 +57,8 @@ class MachineTaskActivity : AppCompatActivity() {
             builder.setTitle("Do you want to generate report?")
             builder.setMessage("Please make sure you have completed all the tasks for this maintenance.")
             builder.setPositiveButton("Generate") { _, _ ->
-                setReportDataToFirebase()
                 setInProgressBackground(true)
+                setReportDataToFirebase()
             }
             builder.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
@@ -80,17 +80,8 @@ class MachineTaskActivity : AppCompatActivity() {
         }
     }
 
-    private fun setInProgress(inProgress: Boolean) {
-        if (inProgress) {
-            binding.progressBar.visibility = View.VISIBLE
-            binding.parentRecyclerView.visibility = View.GONE
-        } else {
-            binding.progressBar.visibility = View.GONE
-            binding.parentRecyclerView.visibility = View.VISIBLE
-        }
-    }
-
     private fun setupTasksData() {
+        taskData = ArrayList() // Initialize taskData
         parentData = ArrayList()
         parentData.add(MaintenanceTypesModel("Daily Maintenance", R.drawable.icon_arrow_left, ArrayList(), false))
         parentData.add(MaintenanceTypesModel("Monthly Maintenance", R.drawable.icon_arrow_left, ArrayList(), false))
@@ -109,7 +100,6 @@ class MachineTaskActivity : AppCompatActivity() {
     }
 
     private fun getMachineTaskDataFromFirebase(collectionName: String, index: Int, callback: (TaskModel) -> Unit = {}) {
-//        setInProgress(true)
         Firebase.firestore
             .collection("tasks")
             .document(userId)
@@ -122,16 +112,14 @@ class MachineTaskActivity : AppCompatActivity() {
                     val tasksCompleted = document.get("tasksCompleted") as? List<Boolean> ?: emptyList()
                     val task = TaskModel(tasks, tasksCompleted)
                     parentData[index].childItemList.add(task)
-//                    setInProgress(false)
+                    taskData.add(task) // Add task to taskData
                     setDataToRecyclerView()
                     callback(task)
                 } else {
-                    setInProgress(false)
                 }
             }
             .addOnFailureListener { e ->
                 UiUtil.showToast(this, e.localizedMessage ?: "Something went wrong")
-                setInProgress(false)
             }
     }
 
@@ -301,7 +289,7 @@ class MachineTaskActivity : AppCompatActivity() {
             row.createCell(0).setCellValue("Report State: $progressState")
 
             row = hssfSheet.createRow(5)
-            row.createCell(0).setCellValue("Report Progress: $progressNumber% Done")
+            row.createCell(0).setCellValue("Report Progress ${progressNumber.toInt()}% Done")
 
             // Create maintenance sections
             val sections = mapOf(
@@ -316,10 +304,15 @@ class MachineTaskActivity : AppCompatActivity() {
                 row = hssfSheet.createRow(rowIndex++)
                 row.createCell(0).setCellValue(section)
 
-                tasks.forEach { task ->
+                if (tasks.isEmpty()) {
                     row = hssfSheet.createRow(rowIndex++)
-                    row.createCell(0).setCellValue(task)
-                    row.createCell(1).setCellValue("\u2611") // Placeholder for checkbox
+                    row.createCell(0).setCellValue("[Not Started]")
+                } else {
+                    tasks.forEach { task ->
+                        row = hssfSheet.createRow(rowIndex++)
+                        row.createCell(0).setCellValue(task)
+                        row.createCell(1).setCellValue("\u2611") // Placeholder for checkbox
+                    }
                 }
 
                 // Add a blank row after each section

@@ -1,15 +1,12 @@
 package com.example.carpenterto_doapplication.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.data_model.TaskModel
-import com.example.carpenterto_doapplication.util.UiUtil
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -32,18 +29,15 @@ class ChecklistAdapter(
     override fun onBindViewHolder(holder: ChecklistViewHolder, position: Int) {
         val (task, taskCompleted) = getTaskAtPosition(position)
 
-        // Reset listener to avoid unexpected behavior during recycling
         holder.taskCheckBox.setOnCheckedChangeListener(null)
 
         holder.taskCheckBox.text = task
         holder.taskCheckBox.isChecked = taskCompleted
 
-        // Set a new listener for the checkbox
         holder.taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
             updateTaskCompletionStatus(position, isChecked)
         }
     }
-
 
     private fun getTaskAtPosition(position: Int): Pair<String, Boolean> {
         var count = 0
@@ -65,11 +59,9 @@ class ChecklistAdapter(
                 val updatedTasksCompleted = taskModel.tasksCompleted.toMutableList()
                 updatedTasksCompleted[localPosition] = isCompleted
 
-                // Save the updated tasksCompleted list to Firebase
                 saveProgressToFirebase(taskModel.tasks, updatedTasksCompleted)
                 taskModel.tasksCompleted = updatedTasksCompleted // Update the original list to keep UI and data in sync
 
-                // Notify the adapter of the change
                 notifyItemChanged(position)
                 return
             }
@@ -78,7 +70,6 @@ class ChecklistAdapter(
     }
 
     private fun saveProgressToFirebase(tasks: List<String>, tasksCompleted: List<Boolean>) {
-        // Update `tasks` collection
         Firebase.firestore
             .collection("tasks")
             .document(userId)
@@ -95,7 +86,7 @@ class ChecklistAdapter(
             else -> "In Progress"
         }
 
-        // Update `machines` collection
+        // Update the machines collection
         Firebase.firestore
             .collection("machines")
             .document(userId)

@@ -42,7 +42,7 @@ class SplashWelcomeActivity : AppCompatActivity() {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     getName()
                 } else {
-                    UiUtil.showToast(this, "Write permission is required to generate the report")
+                    UiUtil.showToast(this, "Write permission is required for this Application")
                     finish() // Close the app if permission is not granted
                 }
             }

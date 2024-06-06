@@ -1,6 +1,5 @@
 package com.example.carpenterto_doapplication.dashboard
 
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +26,8 @@ class MachineFragment : Fragment() {
 
     lateinit var progressBar: ProgressBar
 
+    private var userId = FirebaseAuth.getInstance().currentUser!!.uid
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_machine, container, false)
 
@@ -35,8 +36,6 @@ class MachineFragment : Fragment() {
         recyclerView = view.findViewById(R.id.machine_list)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
-
-        getDataFromFirebase()
 
         return view
     }
@@ -59,17 +58,15 @@ class MachineFragment : Fragment() {
     private fun getDataFromFirebase() {
         machineData = ArrayList()
 
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
         val userMachinesRef = Firebase.firestore
             .collection("machines")
             .document(userId)
             .collection("userMachines")
 
-        setInProgress(true)
         userMachinesRef.get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    machineData.clear()  // Clear old data before adding new data
+                    machineData.clear() // Clear old data before adding new data
                     for (document in documents) {
                         val machineId = document.getLong("machineId")?.toInt() ?: 0
                         val machineName = document.getString("machineName") ?: ""
