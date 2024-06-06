@@ -30,7 +30,7 @@ class MachineAdapter(
         val machine = machineList[position]
         holder.machineName.text = machine.machineName
         holder.progressState.text = machine.progressState
-        holder.progressNumber.text = machine.progressNumber.toString()
+        holder.progressNumber.text = machine.progressNumber.toString() + "%"
 
         holder.horizontalProgressBar.max = 1000
         animateHorizontalProgressBar(holder.horizontalProgressBar, machine.progressNumber)

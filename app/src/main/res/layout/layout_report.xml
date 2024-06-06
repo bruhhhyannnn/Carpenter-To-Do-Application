@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="350dp"
+    android:layout_height="135dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="10dp"
+    app:cardElevation="10dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?selectableItemBackground"
-    android:padding="5dp"
     android:layout_margin="10dp"
     android:id="@+id/checklistView">
 
     <LinearLayout
-        android:layout_width="350dp"
-        android:layout_height="135dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:padding="10dp"
         android:orientation="vertical"
-        android:background="@drawable/stroke_tasks_model"
-        android:elevation="10dp">
+        android:background="@drawable/stroke_tasks_model">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +33,7 @@
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_marginBottom="10dp"
             app:dividerColor="@color/black"/>
 
@@ -87,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:textSize="16sp"
-                android:text="Time: "/>
+                android:text="Time Generated: "/>
             <TextView
                 android:id="@+id/report_time_generated"
                 android:layout_width="match_parent"

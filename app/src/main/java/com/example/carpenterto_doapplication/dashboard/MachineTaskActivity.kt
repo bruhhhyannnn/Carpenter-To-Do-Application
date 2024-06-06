@@ -17,6 +17,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.apache.poi.hssf.usermodel.HSSFSheet
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.ss.util.CellRangeAddress
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -202,7 +203,6 @@ class MachineTaskActivity : AppCompatActivity() {
             }
     }
 
-
     private fun getReportDataFromFirebase() {
         Firebase.firestore
             .collection("reports")
@@ -260,60 +260,25 @@ class MachineTaskActivity : AppCompatActivity() {
             val hssfWorkbook = HSSFWorkbook()
             val hssfSheet: HSSFSheet = hssfWorkbook.createSheet("Machine Report")
 
-            // Create styles
-            val headerStyle = hssfWorkbook.createCellStyle().apply {
-                setFont(hssfWorkbook.createFont().apply {
-                    bold = true
-                    fontHeightInPoints = 14
-                })
-            }
-
-            val boldStyle = hssfWorkbook.createCellStyle().apply {
-                setFont(hssfWorkbook.createFont().apply {
-                    bold = true
-                })
-            }
-
-            val dateStyle = hssfWorkbook.createCellStyle().apply {
-                setFont(hssfWorkbook.createFont().apply {
-                    italic = true
-                })
-            }
-
             // Create header
             var row = hssfSheet.createRow(0)
-            var cell = row.createCell(0)
-            cell.setCellValue("MAINTENANCE REPORT")
-            cell.setCellStyle(headerStyle)
+            row.createCell(0).setCellValue("MAINTENANCE REPORT")
 
             // Create name, machine name, and other details
             row = hssfSheet.createRow(2)
-            row.createCell(0).apply {
-                setCellValue("Name: $fullName")
-                setCellStyle(boldStyle)
-            }
-
-            row.createCell(4).apply {
-                setCellValue("Date Generated: $reportDate")
-                setCellStyle(dateStyle)
-            }
+            row.createCell(0).setCellValue("Name: $fullName")
+            row.createCell(4).setCellValue("Date Generated: $reportDate")
 
             row = hssfSheet.createRow(3)
-            row.createCell(0).apply {
-                setCellValue("Machine Name: $machineName")
-                setCellStyle(boldStyle)
-            }
-
-            row.createCell(4).apply {
-                setCellValue("Time Generated: $reportTime")
-                setCellStyle(dateStyle)
-            }
+            row.createCell(0).setCellValue("Machine Name: $machineName")
+            row.createCell(4).setCellValue("Time Generated: $reportTime")
 
             row = hssfSheet.createRow(4)
             row.createCell(0).setCellValue("Report State: $progressState")
 
+            val progressPercentage = "${(progressNumber * 100).toInt()}%"
             row = hssfSheet.createRow(5)
-            row.createCell(0).setCellValue("Report Progress: $progressNumber")
+            row.createCell(0).setCellValue("Report Progress: $progressPercentage")
 
             // Create maintenance sections
             val sections = mapOf(
@@ -326,15 +291,12 @@ class MachineTaskActivity : AppCompatActivity() {
 
             for ((section, tasks) in sections) {
                 row = hssfSheet.createRow(rowIndex++)
-                row.createCell(0).apply {
-                    setCellValue(section)
-                    setCellStyle(boldStyle)
-                }
+                row.createCell(0).setCellValue(section)
 
                 tasks.forEach { task ->
                     row = hssfSheet.createRow(rowIndex++)
                     row.createCell(0).setCellValue(task)
-                    row.createCell(1).setCellValue("") // Placeholder for checkbox
+                    row.createCell(1).setCellValue("\u2611") // Placeholder for checkbox
                 }
 
                 // Add a blank row after each section
@@ -359,7 +321,6 @@ class MachineTaskActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun bindDate() {
         val calendar = Calendar.getInstance().time

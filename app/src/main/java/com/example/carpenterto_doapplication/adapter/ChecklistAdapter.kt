@@ -90,7 +90,7 @@ class ChecklistAdapter(
         val progressState = when {
             completedCount == 0 -> "Not started"
             completedCount == tasksCompleted.size -> "Completed"
-            else -> "In Progress"
+            else -> "Not Completed"
         }
 
         // Update `machines` collection
