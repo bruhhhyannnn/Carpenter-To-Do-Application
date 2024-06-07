@@ -80,6 +80,7 @@ class ReportFragment : Fragment() {
                         }
                     }
                 }
+                setInProgress(false)
             }
             .addOnFailureListener { exception ->
                 UiUtil.showToast(requireContext(), "Failed to fetch data from Firebase: ${exception.message}")

@@ -19,12 +19,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class ReportAdapter(
-    private val reportList: ArrayList<ReportModel>,
-
+    private val reportList: ArrayList<ReportModel>
 ) : RecyclerView.Adapter<ReportAdapter.ReportViewHolder>() {
-
-    val reportTaskList: ArrayList<ReportTaskModel> = TODO()
-    val combinedTasks = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReportViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_report, parent, false)
@@ -41,16 +37,6 @@ class ReportAdapter(
         holder.reportDateGenerated.text = report.reportDate
         holder.reportTimeGenerated.text = report.reportTime
 
-        var reportTaskList: ArrayList<ReportTaskModel> = ArrayList()
-        holder.reportTasksRecycleView.setHasFixedSize(true)
-        holder.reportTasksRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
-        getReportTasksDataFromFirebase(report.reportId, "dailyMaintenance")
-        getReportTasksDataFromFirebase(report.reportId, "monthlyMaintenance")
-        getReportTasksDataFromFirebase(report.reportId, "asNeededMaintenance")
-        getReportTasksDataFromFirebase(report.reportId, "suggestedMaintenance")
-        reportTaskList.add(ReportTaskModel(tasksCompleted = combinedTasks))
-        holder.reportTasksRecycleView.adapter = ReportTasksAdapter(reportTaskList)
-
         holder.deleteButton.setOnClickListener {
             showAboutAlertDialog(holder.itemView.context, position)
         }
@@ -61,8 +47,6 @@ class ReportAdapter(
         val reportDateGenerated: TextView = itemView.findViewById(R.id.report_date_generated)
         val reportTimeGenerated: TextView = itemView.findViewById(R.id.report_time_generated)
         val deleteButton: ImageView = itemView.findViewById(R.id.remove_button)
-
-        val reportTasksRecycleView: RecyclerView = itemView.findViewById(R.id.report_tasks_recycler_view)
     }
 
     private fun showAboutAlertDialog(context: Context, position: Int) {
@@ -120,28 +104,5 @@ class ReportAdapter(
                 }
             }
         }
-    }
-
-    private fun getReportTasksDataFromFirebase(reportId: String, maintenanceType: String) {
-        Firebase.firestore
-            .collection("reports")
-            .document(reportId)
-            .collection(maintenanceType)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    for (document in documents) {
-                        val taskModel = document.toObject(ReportTaskModel::class.java)
-                        taskModel.let {
-                            if (it.tasksCompleted.isNotEmpty()) {
-                                combinedTasks.addAll(it.tasksCompleted)
-                                Log.d("ReportFragment", "combinedTasks: $combinedTasks")
-                            }
-                        }
-                    }
-                }
-            }
-            .addOnFailureListener { exception ->
-            }
     }
 }
