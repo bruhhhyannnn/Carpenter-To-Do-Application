@@ -1,19 +1,23 @@
 package com.example.carpenterto_doapplication.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.data_model.ReportModel
+import com.example.carpenterto_doapplication.data_model.ReportTaskModel
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ReportAdapter(
-    private val reportList: ArrayList<ReportModel>
+    private val reportList: ArrayList<ReportModel>,
+    private val reportTaskList: ArrayList<ReportTaskModel>
 ) : RecyclerView.Adapter<ReportAdapter.ReportViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReportViewHolder {
@@ -31,6 +35,22 @@ class ReportAdapter(
         holder.reportDateGenerated.text = report.reportDate
         holder.reportTimeGenerated.text = report.reportTime
 
+//        holder.dailyMaintenanceRecycleView.setHasFixedSize(true)
+//        holder.dailyMaintenanceRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
+//        holder.dailyMaintenanceRecycleView.adapter = ReportTasksAdapter(filterTasksByType("dailyMaintenance"))
+//
+//        holder.monthlyMaintenanceRecycleView.setHasFixedSize(true)
+//        holder.monthlyMaintenanceRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
+//        holder.monthlyMaintenanceRecycleView.adapter = ReportTasksAdapter(filterTasksByType("monthlyMaintenance"))
+//
+//        holder.asNeededMaintenanceRecycleView.setHasFixedSize(true)
+//        holder.asNeededMaintenanceRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
+//        holder.asNeededMaintenanceRecycleView.adapter = ReportTasksAdapter(filterTasksByType("asNeededMaintenance"))
+//
+//        holder.suggestedMaintenanceRecycleView.setHasFixedSize(true)
+//        holder.suggestedMaintenanceRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
+//        holder.suggestedMaintenanceRecycleView.adapter = ReportTasksAdapter(filterTasksByType("suggestedMaintenance"))
+
         holder.deleteButton.setOnClickListener {
             showAboutAlertDialog(holder.itemView.context, position)
         }
@@ -41,6 +61,11 @@ class ReportAdapter(
         val reportDateGenerated: TextView = itemView.findViewById(R.id.report_date_generated)
         val reportTimeGenerated: TextView = itemView.findViewById(R.id.report_time_generated)
         val deleteButton: ImageView = itemView.findViewById(R.id.remove_button)
+
+        val dailyMaintenanceRecycleView: RecyclerView = itemView.findViewById(R.id.daily_maintenance_recycler_view)
+        val monthlyMaintenanceRecycleView: RecyclerView = itemView.findViewById(R.id.monthly_maintenance_recycler_view)
+        val asNeededMaintenanceRecycleView: RecyclerView = itemView.findViewById(R.id.as_needed_maintenance_recycler_view)
+        val suggestedMaintenanceRecycleView: RecyclerView = itemView.findViewById(R.id.suggested_maintenance_recycler_view)
     }
 
     private fun showAboutAlertDialog(context: Context, position: Int) {
@@ -98,5 +123,11 @@ class ReportAdapter(
                 }
             }
         }
+    }
+
+    private fun filterTasksByType(maintenanceType: String): ArrayList<ReportTaskModel> {
+        Log.d("ReportAdapter", "Filter tasks by type: $maintenanceType")
+        Log.d("ReportAdapter", "Report task list: $reportTaskList")
+        return ArrayList(reportTaskList.filter { it.maintenanceType == maintenanceType && it.tasksCompleted.isNotEmpty() })
     }
 }
