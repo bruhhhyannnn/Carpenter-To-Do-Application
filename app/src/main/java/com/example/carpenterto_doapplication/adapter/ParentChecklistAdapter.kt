@@ -49,7 +49,7 @@ class ParentChecklistAdapter(
 
         val isExpanded = parentItem.isExpanded
         holder.childRecyclerView.visibility = if (isExpanded) View.VISIBLE else View.GONE
-        holder.arrowImage.rotation = if (isExpanded) 180f else 0f
+        holder.arrowImage.rotation = if (isExpanded) -90f else 0f
 
         holder.itemView.setOnClickListener {
             holder.progressBar.visibility = View.VISIBLE

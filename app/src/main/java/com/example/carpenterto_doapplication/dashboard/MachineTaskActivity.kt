@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -57,6 +58,7 @@ class MachineTaskActivity : AppCompatActivity() {
             builder.setTitle("Do you want to generate report?")
             builder.setMessage("Please make sure you have completed all the tasks for this maintenance.")
             builder.setPositiveButton("Generate") { _, _ ->
+                Toast.makeText(this, "Generating Report...", Toast.LENGTH_SHORT).show()
                 setInProgressBackground(true)
                 setReportDataToFirebase()
             }
@@ -72,10 +74,12 @@ class MachineTaskActivity : AppCompatActivity() {
         if (inProgress) {
             binding.loadingBackground.visibility = View.VISIBLE
             binding.centerProgressBar.visibility = View.VISIBLE
+            binding.note.visibility = View.VISIBLE
             binding.mainActivityLayout.visibility = View.GONE
         } else {
             binding.loadingBackground.visibility = View.GONE
             binding.centerProgressBar.visibility = View.GONE
+            binding.note.visibility = View.GONE
             binding.mainActivityLayout.visibility = View.VISIBLE
         }
     }
@@ -329,12 +333,13 @@ class MachineTaskActivity : AppCompatActivity() {
             try {
                 FileOutputStream(reportFile).use { fileOutputStream ->
                     hssfWorkbook.write(fileOutputStream)
+                    UiUtil.showToast(this, "Finished Generating Report!")
                     setInProgressBackground(false)
-                    UiUtil.showToast(this, "Report Generated to Downloads!")
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
                 UiUtil.showToast(this, "Error saving report")
+                setInProgressBackground(false)
             }
         }
     }
