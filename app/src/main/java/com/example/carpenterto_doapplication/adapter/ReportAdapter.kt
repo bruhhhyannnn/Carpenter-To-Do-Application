@@ -13,12 +13,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.data_model.ReportModel
 import com.example.carpenterto_doapplication.data_model.ReportTaskModel
+import com.example.carpenterto_doapplication.util.UiUtil
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class ReportAdapter(
     private val reportList: ArrayList<ReportModel>,
-    private val reportTaskList: ArrayList<ReportTaskModel>
+
 ) : RecyclerView.Adapter<ReportAdapter.ReportViewHolder>() {
+
+    val reportTaskList: ArrayList<ReportTaskModel> = TODO()
+    val combinedTasks = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReportViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_report, parent, false)
@@ -35,21 +41,15 @@ class ReportAdapter(
         holder.reportDateGenerated.text = report.reportDate
         holder.reportTimeGenerated.text = report.reportTime
 
-//        holder.dailyMaintenanceRecycleView.setHasFixedSize(true)
-//        holder.dailyMaintenanceRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
-//        holder.dailyMaintenanceRecycleView.adapter = ReportTasksAdapter(filterTasksByType("dailyMaintenance"))
-//
-//        holder.monthlyMaintenanceRecycleView.setHasFixedSize(true)
-//        holder.monthlyMaintenanceRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
-//        holder.monthlyMaintenanceRecycleView.adapter = ReportTasksAdapter(filterTasksByType("monthlyMaintenance"))
-//
-//        holder.asNeededMaintenanceRecycleView.setHasFixedSize(true)
-//        holder.asNeededMaintenanceRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
-//        holder.asNeededMaintenanceRecycleView.adapter = ReportTasksAdapter(filterTasksByType("asNeededMaintenance"))
-//
-//        holder.suggestedMaintenanceRecycleView.setHasFixedSize(true)
-//        holder.suggestedMaintenanceRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
-//        holder.suggestedMaintenanceRecycleView.adapter = ReportTasksAdapter(filterTasksByType("suggestedMaintenance"))
+        var reportTaskList: ArrayList<ReportTaskModel> = ArrayList()
+        holder.reportTasksRecycleView.setHasFixedSize(true)
+        holder.reportTasksRecycleView.layoutManager = LinearLayoutManager(holder.itemView.context)
+        getReportTasksDataFromFirebase(report.reportId, "dailyMaintenance")
+        getReportTasksDataFromFirebase(report.reportId, "monthlyMaintenance")
+        getReportTasksDataFromFirebase(report.reportId, "asNeededMaintenance")
+        getReportTasksDataFromFirebase(report.reportId, "suggestedMaintenance")
+        reportTaskList.add(ReportTaskModel(tasksCompleted = combinedTasks))
+        holder.reportTasksRecycleView.adapter = ReportTasksAdapter(reportTaskList)
 
         holder.deleteButton.setOnClickListener {
             showAboutAlertDialog(holder.itemView.context, position)
@@ -62,10 +62,7 @@ class ReportAdapter(
         val reportTimeGenerated: TextView = itemView.findViewById(R.id.report_time_generated)
         val deleteButton: ImageView = itemView.findViewById(R.id.remove_button)
 
-        val dailyMaintenanceRecycleView: RecyclerView = itemView.findViewById(R.id.daily_maintenance_recycler_view)
-        val monthlyMaintenanceRecycleView: RecyclerView = itemView.findViewById(R.id.monthly_maintenance_recycler_view)
-        val asNeededMaintenanceRecycleView: RecyclerView = itemView.findViewById(R.id.as_needed_maintenance_recycler_view)
-        val suggestedMaintenanceRecycleView: RecyclerView = itemView.findViewById(R.id.suggested_maintenance_recycler_view)
+        val reportTasksRecycleView: RecyclerView = itemView.findViewById(R.id.report_tasks_recycler_view)
     }
 
     private fun showAboutAlertDialog(context: Context, position: Int) {
@@ -125,9 +122,26 @@ class ReportAdapter(
         }
     }
 
-    private fun filterTasksByType(maintenanceType: String): ArrayList<ReportTaskModel> {
-        Log.d("ReportAdapter", "Filter tasks by type: $maintenanceType")
-        Log.d("ReportAdapter", "Report task list: $reportTaskList")
-        return ArrayList(reportTaskList.filter { it.maintenanceType == maintenanceType && it.tasksCompleted.isNotEmpty() })
+    private fun getReportTasksDataFromFirebase(reportId: String, maintenanceType: String) {
+        Firebase.firestore
+            .collection("reports")
+            .document(reportId)
+            .collection(maintenanceType)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    for (document in documents) {
+                        val taskModel = document.toObject(ReportTaskModel::class.java)
+                        taskModel.let {
+                            if (it.tasksCompleted.isNotEmpty()) {
+                                combinedTasks.addAll(it.tasksCompleted)
+                                Log.d("ReportFragment", "combinedTasks: $combinedTasks")
+                            }
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+            }
     }
 }

@@ -24,6 +24,7 @@ class ReportFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var reportData: ArrayList<ReportModel>
     private lateinit var reportTaskData: ArrayList<ReportTaskModel>
+    private val combinedTasks = mutableListOf<String>()
     private lateinit var reportAdapter: ReportAdapter
 
     private var userId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -42,7 +43,7 @@ class ReportFragment : Fragment() {
 
         reportData = ArrayList()
         reportTaskData = ArrayList()
-        reportAdapter = ReportAdapter(reportData, reportTaskData)
+        reportAdapter = ReportAdapter(reportData)
         recyclerView.adapter = reportAdapter
 
         getReportDataFromFirebase()
@@ -76,40 +77,12 @@ class ReportFragment : Fragment() {
                         val reportModel = document.toObject(ReportModel::class.java)
                         reportModel.let {
                             reportData.add(it)
-                            fetchTasksForReport(document.id, "dailyMaintenance")
-                            fetchTasksForReport(document.id, "monthlyMaintenance")
-                            fetchTasksForReport(document.id, "asNeededMaintenance")
-                            fetchTasksForReport(document.id, "suggestedMaintenance")
                         }
                     }
                 }
             }
             .addOnFailureListener { exception ->
                 UiUtil.showToast(requireContext(), "Failed to fetch data from Firebase: ${exception.message}")
-                setInProgress(false)
-            }
-    }
-
-    private fun fetchTasksForReport(reportId: String, maintenanceType: String) {
-        Firebase.firestore
-            .collection("reports")
-            .document(reportId)
-            .collection(maintenanceType)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val taskModel = document.toObject(ReportTaskModel::class.java)
-                    if (taskModel.tasksCompleted.isNotEmpty()) {  // Check if tasksCompleted is not empty
-                        taskModel.maintenanceType = maintenanceType
-                        Log.d("ReportFragment", "TaskModel: $taskModel")
-                        reportTaskData.add(taskModel)
-                    }
-                }
-                reportAdapter.notifyDataSetChanged()
-                setInProgress(false)
-            }
-            .addOnFailureListener { exception ->
-                UiUtil.showToast(requireContext(), "Failed to fetch tasks from Firebase: ${exception.message}")
                 setInProgress(false)
             }
     }

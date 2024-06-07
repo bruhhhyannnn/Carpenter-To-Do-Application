@@ -334,6 +334,7 @@ class MachineTaskActivity : AppCompatActivity() {
             try {
                 FileOutputStream(reportFile).use { fileOutputStream ->
                     hssfWorkbook.write(fileOutputStream)
+                    Thread.sleep(1000)
                     UiUtil.showToast(this, "Finished Generating Report!")
                     setInProgressBackground(false)
                 }
