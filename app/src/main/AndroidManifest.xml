@@ -17,6 +17,9 @@
         android:theme="@style/Theme.CarpenterToDoApplication"
         tools:targetApi="31">
         <activity
+            android:name=".dashboard.ReportDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".settings.SettingsChangePasswordActivity"
             android:exported="false" />
         <activity

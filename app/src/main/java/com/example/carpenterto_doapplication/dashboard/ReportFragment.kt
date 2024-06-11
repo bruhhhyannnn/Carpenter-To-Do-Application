@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
 import com.example.carpenterto_doapplication.adapter.ReportAdapter
 import com.example.carpenterto_doapplication.data_model.ReportModel
-import com.example.carpenterto_doapplication.data_model.ReportTaskModel
 import com.example.carpenterto_doapplication.util.UiUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -23,10 +22,7 @@ class ReportFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var reportData: ArrayList<ReportModel>
-    private lateinit var reportTaskData: ArrayList<ReportTaskModel>
-    private val combinedTasks = mutableListOf<String>()
     private lateinit var reportAdapter: ReportAdapter
-
     private var userId = FirebaseAuth.getInstance().currentUser!!.uid
     private lateinit var reportsFound: TextView
 
@@ -37,12 +33,12 @@ class ReportFragment : Fragment() {
 
         progressBar = view.findViewById(R.id.progress_bar)
         reportsFound = view.findViewById(R.id.reports_found)
+
         recyclerView = view.findViewById(R.id.report_list)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         reportData = ArrayList()
-        reportTaskData = ArrayList()
         reportAdapter = ReportAdapter(reportData)
         recyclerView.adapter = reportAdapter
 

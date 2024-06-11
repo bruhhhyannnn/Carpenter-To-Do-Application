@@ -1,6 +1,7 @@
 package com.example.carpenterto_doapplication.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,15 +9,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carpenterto_doapplication.R
+import com.example.carpenterto_doapplication.dashboard.ReportDetailActivity
 import com.example.carpenterto_doapplication.data_model.ReportModel
-import com.example.carpenterto_doapplication.data_model.ReportTaskModel
-import com.example.carpenterto_doapplication.util.UiUtil
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class ReportAdapter(
     private val reportList: ArrayList<ReportModel>
@@ -39,6 +37,19 @@ class ReportAdapter(
 
         holder.deleteButton.setOnClickListener {
             showAboutAlertDialog(holder.itemView.context, position)
+        }
+
+        holder.itemView.setOnClickListener {
+            Log.d("ReportAdapter", "onBindViewHolder: $report")
+            val intent = Intent(holder.itemView.context, ReportDetailActivity::class.java).apply {
+                putExtra("reportId", report.reportId)
+                putExtra("machineName", report.machineName)
+                putExtra("progressNumber", report.progressNumber)
+                putExtra("progressState", report.progressState)
+                putExtra("reportDate", report.reportDate)
+                putExtra("reportTime", report.reportTime)
+            }
+            startActivity(holder.itemView.context, intent, null)
         }
     }
 
