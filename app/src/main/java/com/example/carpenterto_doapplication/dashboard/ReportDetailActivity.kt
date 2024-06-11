@@ -147,83 +147,62 @@ class ReportDetailActivity : AppCompatActivity() {
         parentRecyclerView.adapter = reportAdapter
     }
 
-
     private fun downloadReport() {
-////        val dailyTasks = tasksCompletedData.filter { it.type == "dailyMaintenance" }.map { it.task }
-////        val monthlyTasks = tasksCompletedData.filter { it.type == "monthlyMaintenance" }.map { it.task }
-////        val asNeededTasks = tasksCompletedData.filter { it.type == "asNeededMaintenance" }.map { it.task }
-////        val suggestedTasks = tasksCompletedData.filter { it.type == "suggestedMaintenance" }.map { it.task }
-//
-//        val hssfWorkbook = HSSFWorkbook()
-//        val hssfSheet: HSSFSheet = hssfWorkbook.createSheet("Machine Report")
-//
-//        // Create header
-//        var row = hssfSheet.createRow(0)
-//        row.createCell(0).setCellValue("MAINTENANCE REPORT")
-//
-//        // Create name, machine name, and other details
-//        row = hssfSheet.createRow(2)
-//        row.createCell(0).setCellValue("Name: $fullName")
-//        row.createCell(4).setCellValue("Date Generated: $reportDate")
-//
-//        row = hssfSheet.createRow(3)
-//        row.createCell(0).setCellValue("Machine Name: $machineName")
-//        row.createCell(4).setCellValue("Time Generated: $reportTime")
-//
-//        row = hssfSheet.createRow(4)
-//        row.createCell(0).setCellValue("Report State: $progressState")
-//
-//        row = hssfSheet.createRow(5)
-//        row.createCell(0).setCellValue("Report Progress ${progressNumber.toInt()}% Done")
-//
-////        // Create maintenance sections
-////        val sections = mapOf(
-////            "Daily Maintenance" to dailyTasks,
-////            "Monthly Maintenance" to monthlyTasks,
-////            "As Needed Maintenance" to asNeededTasks,
-////            "Suggested Maintenance" to suggestedTasks
-////        )
-////        var rowIndex = 7
-////
-////        for ((section, tasks) in sections) {
-////            row = hssfSheet.createRow(rowIndex++)
-////            row.createCell(0).setCellValue(section)
-////
-////            if (tasks.isEmpty()) {
-////                row = hssfSheet.createRow(rowIndex++)
-////                row.createCell(0).setCellValue("[Not Started]")
-////            } else {
-////                tasks.forEach { task ->
-////                    row = hssfSheet.createRow(rowIndex++)
-////                    row.createCell(0).setCellValue(task)
-////                    row.createCell(1).setCellValue("\u2611") // Placeholder for checkbox
-////                }
-////            }
-////
-////            // Add a blank row after each section
-////            rowIndex++
-////        }
-//
-//        // Save the file
-//        val sanitizedMachineName = machineName.replace(" ", "_")
-//        val sanitizedFullName = fullName.replace(" ", "_")
-//        val sanitizedTime = reportTime.replace(":", ".").replace(" ", "_")
-//        val reportFileName = "$sanitizedMachineName-Report-$sanitizedFullName-$sanitizedTime.xls"
-//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-//        val reportFile = File(downloadsDir, reportFileName)
-//
-//        try {
-//            FileOutputStream(reportFile).use { fileOutputStream ->
-//                hssfWorkbook.write(fileOutputStream)
-//                Thread.sleep(1000)
-//                UiUtil.showToast(this, "Finished Generating Report!")
-//                setInProgressBackground(false)
-//            }
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//            UiUtil.showToast(this, "Error saving report")
-//            setInProgressBackground(false)
-//        }
+        val hssfWorkbook = HSSFWorkbook()
+        val hssfSheet: HSSFSheet = hssfWorkbook.createSheet("Machine Report")
+
+        // Create header
+        var row = hssfSheet.createRow(0)
+        row.createCell(0).setCellValue("MAINTENANCE REPORT")
+
+        // Create name, machine name, and other details
+        row = hssfSheet.createRow(2)
+        row.createCell(0).setCellValue("Name: $fullName")
+        row.createCell(4).setCellValue("Date Generated: $reportDate")
+
+        row = hssfSheet.createRow(3)
+        row.createCell(0).setCellValue("Machine Name: $machineName")
+        row.createCell(4).setCellValue("Time Generated: $reportTime")
+
+        row = hssfSheet.createRow(4)
+        row.createCell(0).setCellValue("Report State: $progressState")
+
+        row = hssfSheet.createRow(5)
+        row.createCell(0).setCellValue("Report Progress ${progressNumber.toInt()}% Done")
+
+        // Create maintenance sections
+        var rowIndex = 7
+
+        row = hssfSheet.createRow(rowIndex++)
+        row.createCell(0).setCellValue("Tasks Completed")
+        tasksCompletedData.forEach { taskModel ->
+            taskModel.tasksCompleted.forEach { task ->
+                row = hssfSheet.createRow(rowIndex++)
+                row.createCell(0).setCellValue(task)
+                row.createCell(1).setCellValue("\u2611") // Placeholder for checkbox
+            }
+        }
+
+        // Save the file
+        val sanitizedMachineName = machineName.replace(" ", "_")
+        val sanitizedFullName = fullName.replace(" ", "_")
+        val sanitizedTime = reportTime.replace(":", ".").replace(" ", "_")
+        val reportFileName = "$sanitizedMachineName-Report-$sanitizedFullName-$sanitizedTime.xls"
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val reportFile = File(downloadsDir, reportFileName)
+
+        try {
+            FileOutputStream(reportFile).use { fileOutputStream ->
+                hssfWorkbook.write(fileOutputStream)
+                Thread.sleep(1000)
+                Toast.makeText(this, "Report Downloaded", Toast.LENGTH_SHORT).show()
+                setInProgressBackground(false)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            UiUtil.showToast(this, "Error saving report")
+            setInProgressBackground(false)
+        }
     }
 
     private fun bindDate() {

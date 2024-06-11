@@ -327,7 +327,7 @@ class MachineTaskActivity : AppCompatActivity() {
             val sanitizedMachineName = machineName.replace(" ", "_")
             val sanitizedFullName = fullName.replace(" ", "_")
             val sanitizedTime = reportTime.replace(":", ".").replace(" ", "_")
-            val reportFileName = "$sanitizedMachineName-Report-$sanitizedFullName-$sanitizedTime.xls"
+            val reportFileName = "$sanitizedMachineName-Report-$sanitizedFullName$sanitizedTime.xls"
             val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val reportFile = File(downloadsDir, reportFileName)
 
@@ -335,7 +335,7 @@ class MachineTaskActivity : AppCompatActivity() {
                 FileOutputStream(reportFile).use { fileOutputStream ->
                     hssfWorkbook.write(fileOutputStream)
                     Thread.sleep(1000)
-                    UiUtil.showToast(this, "Finished Generating Report!")
+                    Toast.makeText(this, "Finished Generating Report!", Toast.LENGTH_SHORT).show()
                     setInProgressBackground(false)
                 }
             } catch (e: IOException) {
