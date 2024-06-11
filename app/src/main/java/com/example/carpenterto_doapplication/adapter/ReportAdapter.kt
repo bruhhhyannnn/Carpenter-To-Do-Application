@@ -43,6 +43,7 @@ class ReportAdapter(
             Log.d("ReportAdapter", "onBindViewHolder: $report")
             val intent = Intent(holder.itemView.context, ReportDetailActivity::class.java).apply {
                 putExtra("reportId", report.reportId)
+                putExtra("fullName", report.fullName)
                 putExtra("machineName", report.machineName)
                 putExtra("progressNumber", report.progressNumber)
                 putExtra("progressState", report.progressState)
