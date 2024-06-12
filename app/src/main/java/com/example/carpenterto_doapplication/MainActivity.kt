@@ -25,8 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         bindHeader()
-//        replaceFragment(MachineFragment())
-        replaceFragment(ReportFragment())
+        replaceFragment(MachineFragment())
 
         binding.settingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))

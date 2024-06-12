@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.carpenterto_doapplication.adapter.ParentReportDetailAdapter
 import com.example.carpenterto_doapplication.adapter.ReportDetailAdapter
 import com.example.carpenterto_doapplication.data_model.TaskModel
 import com.example.carpenterto_doapplication.data_model.TasksCompletedModel
@@ -28,8 +29,8 @@ class ReportDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityReportDetailBinding
     private lateinit var parentRecyclerView: RecyclerView
+    private lateinit var parentReportAdapter: ParentReportDetailAdapter
     private lateinit var tasksCompletedData: ArrayList<TasksCompletedModel>
-    private lateinit var reportAdapter: ReportDetailAdapter
 
     private lateinit var reportId: String
     private lateinit var fullName: String
@@ -55,6 +56,7 @@ class ReportDetailActivity : AppCompatActivity() {
         parentRecyclerView = binding.recyclerView
         parentRecyclerView.setHasFixedSize(true)
         parentRecyclerView.layoutManager = LinearLayoutManager(this)
+
 
         bindDate()
         bindReportData()
@@ -101,50 +103,59 @@ class ReportDetailActivity : AppCompatActivity() {
 
     private fun setTasksCompletedData() {
         tasksCompletedData = ArrayList()
-        val combinedTasks = ArrayList<String>()
+        val maintenanceTypeMap = mapOf(
+            "Daily Maintenance" to "dailyMaintenance",
+            "Monthly Maintenance" to "monthlyMaintenance",
+            "As Needed Maintenance" to "asNeededMaintenance",
+            "Suggested Maintenance" to "suggestedMaintenance"
+        )
+        var remainingQueries = maintenanceTypeMap.size
 
-        val collections = listOf("dailyMaintenance", "monthlyMaintenance", "asNeededMaintenance", "suggestedMaintenance")
-        var completedRequests = 0
-
-        for (collection in collections) {
-            getTasksCompletedDataFromFirebase(collection) { tasks ->
-                combinedTasks.addAll(tasks)
-                completedRequests++
-
-                if (completedRequests == collections.size) {
-                    tasksCompletedData.add(TasksCompletedModel(combinedTasks))
+        for ((maintenanceTitle, maintenanceType) in maintenanceTypeMap) {
+            getTasksCompletedDataFromFirebase(maintenanceTitle, maintenanceType) {
+                remainingQueries--
+                if (remainingQueries == 0) {
                     setupRecyclerView()
                 }
             }
         }
     }
 
-    private fun getTasksCompletedDataFromFirebase(collectionName: String, callback: (List<String>) -> Unit) {
+    private fun getTasksCompletedDataFromFirebase(maintenanceTitle: String, maintenanceType: String, onComplete: () -> Unit) {
         Firebase.firestore
             .collection("reports")
             .document(reportId)
-            .collection(collectionName)
+            .collection(maintenanceType)
             .get()
             .addOnSuccessListener { documents ->
-                val tasks = ArrayList<String>()
-                for (document in documents) {
-                    val task = document.toObject(TasksCompletedModel::class.java)
-                    if (task.tasksCompleted.isNotEmpty()) { // Check if the document is not empty
-                        tasks.addAll(task.tasksCompleted) // Add each task to the list
-                    }
+                val tasksCompleted = documents.map { document ->
+                    val originalTask = document.toObject(TasksCompletedModel::class.java)
+                    // Create a new instance with the desired maintenanceType
+                    TasksCompletedModel(
+                        maintenanceType = maintenanceTitle,
+                        arrowImage = originalTask.arrowImage,
+                        tasksCompleted = originalTask.tasksCompleted
+                    )
                 }
-                callback(tasks) // Invoke the callback with the fetched tasks
+
+                if (tasksCompleted.isNotEmpty()) {
+                    tasksCompletedData.addAll(tasksCompleted)
+                } else {
+                    tasksCompletedData.add(TasksCompletedModel(maintenanceType = maintenanceTitle, arrowImage = 0, tasksCompleted = emptyList()))
+                }
+
+                onComplete()
             }
             .addOnFailureListener { e ->
                 UiUtil.showToast(this, e.localizedMessage ?: "Something went wrong")
-                callback(emptyList()) // Invoke the callback with an empty list on failure
+                onComplete()
             }
     }
 
     private fun setupRecyclerView() {
-        val flattenedTasksList = tasksCompletedData.flatMap { it.tasksCompleted }
-        reportAdapter = ReportDetailAdapter(flattenedTasksList)
-        parentRecyclerView.adapter = reportAdapter
+        Log.d("TAG", "setupRecyclerView: $tasksCompletedData")
+        parentReportAdapter = ParentReportDetailAdapter(tasksCompletedData)
+        parentRecyclerView.adapter = parentReportAdapter
     }
 
     private fun downloadReport() {
@@ -173,14 +184,23 @@ class ReportDetailActivity : AppCompatActivity() {
         // Create maintenance sections
         var rowIndex = 7
 
-        row = hssfSheet.createRow(rowIndex++)
-        row.createCell(0).setCellValue("Tasks Completed")
-        tasksCompletedData.forEach { taskModel ->
-            taskModel.tasksCompleted.forEach { task ->
+        for (taskCompleted in tasksCompletedData) {
+            row = hssfSheet.createRow(rowIndex++)
+            row.createCell(0).setCellValue(taskCompleted.maintenanceType)
+
+            if (taskCompleted.tasksCompleted.isEmpty()) {
                 row = hssfSheet.createRow(rowIndex++)
-                row.createCell(0).setCellValue(task)
-                row.createCell(1).setCellValue("\u2611") // Placeholder for checkbox
+                row.createCell(0).setCellValue("[Not Started]")
+            } else {
+                taskCompleted.tasksCompleted.forEach { task ->
+                    row = hssfSheet.createRow(rowIndex++)
+                    row.createCell(0).setCellValue(task)
+                    row.createCell(1).setCellValue("\u2611") // Placeholder for checkbox
+                }
             }
+
+            // Add a blank row after each section
+            rowIndex++
         }
 
         // Save the file

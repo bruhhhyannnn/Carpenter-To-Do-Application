@@ -26,7 +26,6 @@ class ReportDetailAdapter(
         holder.taskCheckBox.text = task
         holder.taskCheckBox.isChecked = true
         holder.taskCheckBox.isClickable = false
-        Log.d("TAG", "onBindViewHolder: $task")
     }
 
     class ChecklistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
